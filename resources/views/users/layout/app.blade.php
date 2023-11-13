@@ -9,9 +9,9 @@
 </head>
 
 <body class="font-poppins">
-    <div class="flex gap-8">
+    <div class="flex gap-8 h-screen overflow-hidden">
         @include('users.components.navbar')
-        <div class="h-screen w-full pr-9 overflow-y-scroll pt-7">
+        <div class="h-screen w-full pr-9 overflow-y-auto pt-7">
             @include('users.components.header')
             <div class="h-full">
                 @yield('content')
