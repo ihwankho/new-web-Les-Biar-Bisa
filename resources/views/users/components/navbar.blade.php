@@ -17,7 +17,7 @@
             <img src="{{ asset('assets/icon/assignment-dark.png') }}" alt="images">
             <p class="text-base">ASSIGNMENT</p>
         </a>
-        <a class="item-nav text-primary" href="{{ route('dashboard.index') }}">
+        <a class="item-nav text-primary" href="{{ route('payment.index') }}">
             <img src="{{ asset('assets/icon/payment-dark.png') }}" alt="images">
             <p class="text-base">PAYMENT</p>
         </a>

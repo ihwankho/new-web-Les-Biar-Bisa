@@ -12,7 +12,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
+        return view('users.page.payment.index');
     }
 
     /**
