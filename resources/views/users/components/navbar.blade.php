@@ -9,11 +9,11 @@
             <img src="{{ asset('assets/icon/course-dark.png') }}" alt="images">
             <p class="text-base">MY COURSE</p>
         </a>
-        <a class="item-nav text-primary" href="{{ route('dashboard.index') }}">
+        <a class="item-nav text-primary" href="{{ route('schedule.index') }}">
             <img src="{{ asset('assets/icon/schedule-dark.png') }}" alt="images">
             <p class="text-base">SCHEDULE</p>
         </a>
-        <a class="item-nav text-primary" href="{{ route('dashboard.index') }}">
+        <a class="item-nav text-primary" href="{{ route('assignment.index') }}">
             <img src="{{ asset('assets/icon/assignment-dark.png') }}" alt="images">
             <p class="text-base">ASSIGNMENT</p>
         </a>

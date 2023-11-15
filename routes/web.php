@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScheduleController;
@@ -24,3 +25,4 @@ Route::get('/', function () {
 Route::resource('/dashboard', DashboardController::class);
 Route::resource('/mycourse', CourseController::class);
 Route::resource('/schedule', ScheduleController::class);
+Route::resource('/assignment', AssignmentController::class);

@@ -12,7 +12,7 @@ class AssignmentController extends Controller
      */
     public function index()
     {
-        //
+        return view('users.page.assignment.index');
     }
 
     /**
