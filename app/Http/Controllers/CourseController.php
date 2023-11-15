@@ -12,7 +12,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        return view('users.page.mycourse.index');
+        return view('users.page.mycourse.index', ['page' => 'course']);
     }
 
     /**
