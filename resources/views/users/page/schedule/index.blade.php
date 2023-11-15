@@ -1,4 +1,4 @@
-@extends('users.layout.app')
+@extends('layout.app')
 
 @section('title', 'Schedule')
 

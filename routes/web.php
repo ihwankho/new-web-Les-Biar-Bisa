@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
@@ -27,3 +28,4 @@ Route::resource('/mycourse', CourseController::class);
 Route::resource('/schedule', ScheduleController::class);
 Route::resource('/assignment', AssignmentController::class);
 Route::resource('/payment', PaymentController::class);
+Route::resource('/admin/dashboard', AdminDashboardController::class);

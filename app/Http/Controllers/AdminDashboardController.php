@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Score;
 use Illuminate\Http\Request;
 
-class ScoreController extends Controller
+class AdminDashboardController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +33,7 @@ class ScoreController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Score $score)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +41,7 @@ class ScoreController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Score $score)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +49,7 @@ class ScoreController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Score $score)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +57,7 @@ class ScoreController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Score $score)
+    public function destroy(string $id)
     {
         //
     }

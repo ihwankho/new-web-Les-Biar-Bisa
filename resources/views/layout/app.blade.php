@@ -10,13 +10,13 @@
 
 <body class="font-poppins">
     <div class="flex gap-8 h-screen overflow-hidden">
-        @include('users.components.navbar')
+        @include('components.navbar')
         <div class="h-screen w-full pr-9 overflow-y-auto pt-7">
-            @include('users.components.header')
+            @include('components.header')
             <div class="h-full mt-10">
                 @yield('content')
             </div>
-            @include('users.components.footer')
+            @include('components.footer')
         </div>
     </div>
 </body>
