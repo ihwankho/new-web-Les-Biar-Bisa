@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TingkatanController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +22,5 @@ Route::get('/', function () {
 });
 
 Route::resource('/dashboard', DashboardController::class);
-Route::resource('/tingkatan', TingkatanController::class);
+Route::resource('/mycourse', CourseController::class);
+Route::resource('/schedule', ScheduleController::class);

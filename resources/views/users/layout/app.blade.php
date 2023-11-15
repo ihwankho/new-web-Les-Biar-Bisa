@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title')</title>
+    <title>@yield('title') | Les Biar Bisa</title>
     @vite('resources/css/app.css')
 </head>
 
@@ -13,7 +13,7 @@
         @include('users.components.navbar')
         <div class="h-screen w-full pr-9 overflow-y-auto pt-7">
             @include('users.components.header')
-            <div class="h-full">
+            <div class="h-full mt-10">
                 @yield('content')
             </div>
             @include('users.components.footer')

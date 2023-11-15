@@ -2,3 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+@layer utilities {
+    .item-nav {
+        @apply flex gap-3 items-center p-3 rounded-r-lg font-extrabold;
+    }
+
+    .page-title {
+        @apply font-poppins text-xl text-primary pb-3 font-semibold;
+    }
+
+    .card {
+        @apply p-3 rounded-md border-2 border-primary w-max min-w-[256px];
+    }
+
+    .card-thumbnail {
+        @apply min-w-[256px] max-w-xs rounded-md;
+    }
+
+    .card-title {
+        @apply font-extrabold text-lg py-3 text-primary;
+    }
+}
