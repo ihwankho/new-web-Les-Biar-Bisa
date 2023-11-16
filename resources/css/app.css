@@ -16,6 +16,10 @@
         @apply p-3 rounded-md border-2 border-primary w-max min-w-[256px];
     }
 
+    .card-modify {
+        @apply p-3 rounded-md border-2 border-primary;
+    }
+
     .card-thumbnail {
         @apply min-w-[256px] max-w-xs rounded-md;
     }
