@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdminAccountController;
+use App\Http\Controllers\AdminCourseController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminPaymentController;
+use App\Http\Controllers\AdminScheduleController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
@@ -29,3 +33,7 @@ Route::resource('/schedule', ScheduleController::class);
 Route::resource('/assignment', AssignmentController::class);
 Route::resource('/payment', PaymentController::class);
 Route::resource('/admin/dashboard', AdminDashboardController::class);
+Route::resource('/admin/course', AdminCourseController::class);
+Route::resource('/admin/schedule', AdminScheduleController::class);
+Route::resource('/admin/payment', AdminPaymentController::class);
+Route::resource('/admin/account', AdminAccountController::class);

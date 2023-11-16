@@ -13,6 +13,7 @@
                     alt="images">
                 <p class="text-base">DASHBOARD</p>
             </a>
+            {{ route('dashboard.index') }}
             <a class="item-nav {{ $page == 'mycourse' ? 'text-white bg-primary' : 'text-primary' }}"
                 href="{{ route('mycourse.index') }}">
                 <img src="{{ $page == 'mycourse' ? asset('assets/icon/course-light.png') : asset('assets/icon/course-dark.png') }}"
