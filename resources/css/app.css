@@ -27,4 +27,8 @@
     .card-title {
         @apply font-extrabold text-lg py-3 text-primary;
     }
+
+    .btn {
+        @apply p-2 text-xs font-semibold text-white bg-primary rounded-md;
+    }
 }
