@@ -5,9 +5,9 @@
 @section('content')
     <h5 class="page-title">Account</h5>
     <a href="#" class="btn inline-block">+ Add Account</a>
-    <div class="relative overflow-x-auto w-max max-w-full sm:rounded-lg">
-        <table class="text-sm text-left rtl:text-center text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <div class="relative overflow-x-auto mt-5 w-max max-w-full sm:rounded-lg">
+        <table class="text-sm text-left rtl:text-center text-gray-500 ">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-200 ">
                 <tr>
                     <th scope="col" class="px-6 py-3">NO</th>
                     <th scope="col" class="px-6 py-3">NAME</th>
