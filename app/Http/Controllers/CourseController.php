@@ -99,8 +99,6 @@ class CourseController extends Controller
             "status" => $status
         ];
 
-        // dd($data);
-
         return view('users.page.mycourse.assignment', compact('data'));
     }
 

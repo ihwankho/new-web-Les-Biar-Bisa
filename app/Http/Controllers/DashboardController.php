@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Score;
+use App\Models\Tingkatan;
+use App\Models\User;;
+
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -13,7 +17,17 @@ class DashboardController extends Controller
     public function index()
     {
         $course = Course::all()->count();
-        return view('users.page.dashboard.index', compact('course'));
+
+        $assignment = [
+            "done" => Score::where('id_user', '=', 1)->where('status', '=', 'selesai')->count(),
+            "late" => Score::where('id_user', '=', 1)->where('status', '=', 'terlambat')->count(),
+            "notdone" => Score::where('id_user', '=', 1)->where('status', '=', 'belum_selesai')->count(),
+        ];
+
+        $username = User::firstWhere('username', 'mallexibra');
+        $schedule = Tingkatan::firstWhere('id', $username->id_tingkatan);
+
+        return view('users.page.dashboard.index', compact('schedule', 'assignment', 'course'));
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tingkatan;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -11,7 +13,10 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        return view('users.page.schedule.index');
+        $username = User::firstWhere('username', 'mallexibra');
+        $schedule = Tingkatan::firstWhere('id', $username->id_tingkatan);
+
+        return view('users.page.schedule.index', compact('schedule'));
     }
 
     /**

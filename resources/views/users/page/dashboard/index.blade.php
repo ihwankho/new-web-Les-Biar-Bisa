@@ -15,15 +15,15 @@
         <h5 class="page-title">Your Assignment</h5>
         <div class="flex gap-5 items-center">
             <div class="w-max p-3 mt-2 bg-primary shadow-lg text-white rounded-lg">
-                <p class="font-extrabold text-lg">25</p>
+                <p class="font-extrabold text-lg">{{ $assignment['notdone'] }}</p>
                 <p class="font-semibold text-xs opacity-30">Not Done</p>
             </div>
             <div class="w-max p-3 mt-2 shadow-lg rounded-lg">
-                <p class="font-extrabold text-lg">10</p>
+                <p class="font-extrabold text-lg">{{ $assignment['done'] }}</p>
                 <p class="font-semibold text-xs opacity-30">Done</p>
             </div>
             <div class="w-max p-3 mt-2 shadow-lg rounded-lg">
-                <p class="font-extrabold text-lg">7</p>
+                <p class="font-extrabold text-lg">{{ $assignment['late'] }}</p>
                 <p class="font-semibold text-xs opacity-30">Working Late</p>
             </div>
             <div class="w-max p-3 mt-2 shadow-lg rounded-lg">
@@ -35,7 +35,7 @@
     <div class="pt-7">
         <h5 class="page-title">Your course schedule</h5>
         <div class="w-1/2 p-3 bg-primary rounded-lg mt-3">
-            <img src="{{ asset('/assets/schedule/schedule1.jpeg') }}" alt="Schedule">
+            <img src="{{ asset('/assets/schedule/' . $schedule->jadwal) }}" alt="Schedule">
         </div>
     </div>
 @endsection
