@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('note');
             $table->string('bukti');
+            $table->enum('status', ['pending', 'approved', 'unapproved'])->default('pending');
             $table->unsignedBigInteger('id_user');
             $table->timestamps();
 

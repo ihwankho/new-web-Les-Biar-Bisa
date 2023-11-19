@@ -7,12 +7,16 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('users.page.payment.index');
+        $data = Payment::all();
+        $i = 0;
+
+        return view('users.page.payment.index', compact('i', 'data'));
     }
 
     /**
@@ -20,7 +24,7 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        //
+        return view('users.page.payment.create');
     }
 
     /**
@@ -28,15 +32,18 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Payment::create($request->all());
+
+        return redirect('/payment')->with('success', 'Success add payment');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Payment $payment)
+    public function show(String $id)
     {
-        //
+        $payment = Payment::where('id', $id)->first();
+        return view('users.page.payment.show', compact('payment'));
     }
 
     /**

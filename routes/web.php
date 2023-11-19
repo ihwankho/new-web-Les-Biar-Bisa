@@ -36,7 +36,6 @@ Route::get('/assignment/task/{id}', [CourseController::class, 'task'])->name('as
 Route::post('/assignment/{id_assignment}', [CourseController::class, 'storeass'])->name('assignment.storeass');
 Route::get('/assignment/assignment/{id}', [CourseController::class, 'assignment'])->name('assignment.assignment');
 Route::resource('/schedule', ScheduleController::class);
-Route::resource('/assignment', AssignmentController::class);
 Route::resource('/payment', PaymentController::class);
 Route::resource('/admin/dashboard', AdminDashboardController::class);
 Route::resource('/admin/course', AdminCourseController::class);
