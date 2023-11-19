@@ -5,10 +5,17 @@
 @section('content')
     <h1 class="page-title">Your Course</h1>
     <div>
-        <div class="card">
-            <img class="card-thumbnail" src="{{ asset('/assets/course/thumbnail1.jpg') }}" alt="Thumbnail-Course">
-            <h3 class="card-title">VOCABULARY ENGLISH LANGUAGE</h3>
-            <p class="text-xs bg-primary p-2 rounded-md w-max text-white font-semibold">5 Materi | 2 Assignments</p>
-        </div>
+        @if ($courses->count() > 0)
+            @foreach ($courses as $course)
+                <a href="{{ route('mycourse.show', ['mycourse' => $course->id]) }}" class="card block">
+                    <img class="card-thumbnail" src="{{ asset('/assets/course/thumbnail1.jpg') }}" alt="Thumbnail-Course">
+                    <h3 class="card-title">{{ $course->nama }}</h3>
+                    <p class="text-xs bg-primary p-2 rounded-md w-max text-white font-semibold">{{ $file_courses }} Materi |
+                        {{ $assignments }} Assignments</p>
+                </a>
+            @endforeach
+        @else
+            <h1 class="font-bold text-xl text-primary">Data is empty...</h1>
+        @endif
     </div>
 @endsection

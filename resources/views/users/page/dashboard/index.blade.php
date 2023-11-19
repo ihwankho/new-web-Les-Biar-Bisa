@@ -6,7 +6,7 @@
     <div class="pt-7">
         <h5 class="page-title">Your Course</h5>
         <p class="font-semibold bg-primary p-3 mt-2 rounded-lg text-base flex items-center gap-3 text-white w-max"><span
-                class="font-extrabold text-lg">25</span>
+                class="font-extrabold text-lg">{{ $course }}</span>
             Now
             available for
             you</p>

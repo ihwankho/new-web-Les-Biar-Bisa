@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Assignment;
 use App\Models\Course;
+use App\Models\FileCourse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
@@ -12,7 +15,13 @@ class CourseController extends Controller
      */
     public function index()
     {
-        return view('users.page.mycourse.index', ['page' => 'course']);
+        $courses = Course::all();
+
+        $file_courses = FileCourse::all()->count();
+
+        $assignment = Assignment::all()->count();
+
+        return view('users.page.mycourse.index', ['courses' => $courses, 'file_courses' => $file_courses, 'assignments' => $assignment]);
     }
 
     /**
@@ -34,9 +43,15 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Course $course)
+    public function show(String $id)
     {
-        //
+        $course = Course::where('id', '=', $id)->first();
+
+        $file_course = FileCourse::where('id_course', '=', $id)->get();
+
+        $assignment = Assignment::where('id_course', '=', $id)->get();
+
+        return view('users.page.mycourse.show', compact('course', 'file_course', 'assignment'));
     }
 
     /**

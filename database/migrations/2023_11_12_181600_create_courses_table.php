@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('deskripsi');
+            $table->string('thumbnail');
             $table->unsignedBigInteger('id_tingkatan');
             $table->timestamps();
 

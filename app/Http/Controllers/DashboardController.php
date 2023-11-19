@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -11,7 +12,8 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('users.page.dashboard.index', ['page' => 'dashboard']);
+        $course = Course::all()->count();
+        return view('users.page.dashboard.index', compact('course'));
     }
 
     /**
