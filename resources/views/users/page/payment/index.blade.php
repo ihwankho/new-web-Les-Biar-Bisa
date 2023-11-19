@@ -3,7 +3,8 @@
 @section('title', 'Payment')
 
 @section('content')
-    <h5 class="page-title">History Payment</h5>
+    <h5 class="page-title">
+        History Payment</h5>
 
     <a class="bg-primary inline-block p-3 rounded-md font-semibold text-white text-xs" href="/payment/create">+ Tambah Bukti
         Pembayaran</a>
@@ -40,9 +41,17 @@
                             </td>
                             <td scope="col" class="px-6 py-3">{{ $item->nama }}</td>
                             <td scope="col" class="px-6 py-3">{{ $formattedDate }}</td>
-                            <td scope="col" class="px-6 py-3">
-                                <span
-                                    class="bg-slate-400 font-semibold py-1 px-3 text-white rounded-full text-xs">Pending</span>
+                            <td scope="col" class="capitalize px-6 py-3">
+                                @if ($item->status == 'approved')
+                                    <span
+                                        class="bg-green-400 font-semibold py-1 px-3 text-white rounded-full text-xs">{{ $item->status }}</span>
+                                @elseif($item->status == 'unapproved')
+                                    <span
+                                        class="bg-rose-400 font-semibold py-1 px-3 text-white rounded-full text-xs">{{ $item->status }}</span>
+                                @else
+                                    <span
+                                        class="bg-slate-400 font-semibold py-1 px-3 text-white rounded-full text-xs">{{ $item->status }}</span>
+                                @endif
                             </td>
                             <td scope="col" class="px-6 py-3">{{ $item->note }}</td>
                             <td scope="col" class="px-6 py-3">

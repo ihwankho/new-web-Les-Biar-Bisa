@@ -18,8 +18,17 @@
             </tr>
             <tr>
                 <td class="font-semibold">Status</td>
-                <td>: <span
-                        class="bg-slate-400 font-semibold py-1 px-3 text-white rounded-full text-xs">{{ $payment->created_at }}</span>
+                <td class="capitalize">:
+                    @if ($payment->status == 'approved')
+                        <span
+                            class="bg-green-400 font-semibold py-1 px-3 text-white rounded-full text-xs">{{ $payment->status }}</span>
+                    @elseif($payment->status == 'unapproved')
+                        <span
+                            class="bg-rose-400 font-semibold py-1 px-3 text-white rounded-full text-xs">{{ $payment->status }}</span>
+                    @else
+                        <span
+                            class="bg-slate-400 font-semibold py-1 px-3 text-white rounded-full text-xs">{{ $payment->status }}</span>
+                    @endif
                 </td>
             </tr>
             <tr>
