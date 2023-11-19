@@ -29,6 +29,8 @@ Route::get('/', function () {
 
 Route::resource('/dashboard', DashboardController::class);
 Route::resource('/mycourse', CourseController::class);
+Route::get('/mycourse/task/{id}', [CourseController::class, 'task'])->name('mycourse.task');
+Route::get('/mycourse/task/{id}', [CourseController::class, 'assignment'])->name('mycourse.assignment');
 Route::resource('/schedule', ScheduleController::class);
 Route::resource('/assignment', AssignmentController::class);
 Route::resource('/payment', PaymentController::class);

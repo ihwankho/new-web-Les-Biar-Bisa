@@ -21,18 +21,38 @@
         </div>
         <div>
             <h3 class="font-extrabold text-xl text-primary">Task</h3>
-            @if ($assignment->count() > 0)
-                @foreach ($assignment as $task)
-                    <a href="#" class="block my-3 max-w-xs">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <img src="{{ asset('/assets/icon/document_task.svg') }}" alt="icon_documentTask">
-                                <p class="font-bold text-lg text-primary uppercase">{{ $task->nama }}</p>
+            @if ($data->count() > 0)
+                @foreach ($data as $task)
+                    @if ($task['status'] == 'belum selesai')
+                        <a href="{{ route('mycourse.task', ['id' => $task['id']]) }}" class="block my-3 max-w-xs">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <img src="{{ asset('/assets/icon/document_task.svg') }}" alt="icon_documentTask">
+                                    <p class="font-bold text-lg text-primary uppercase">{{ $task['nama'] }}</p>
+                                </div>
+                                <span class="bg-slate-500 text-xs text-white font-semibold rounded-full px-3 py-1">Not
+                                    Done</span>
                             </div>
-                            <span class="bg-primary text-xs text-white font-semibold rounded-full px-3 py-1">Done</span>
-                        </div>
-                        <p class="text-xs bg-gray-100 w-max p-1 rounded-md m-2"><b>Deadline:</b> 07 November 2023 20:00</p>
-                    </a>
+                            <p class="text-xs bg-gray-100 w-max p-1 rounded-md m-2"><b>Deadline:</b>
+                                {{ $task['deadline'] }}
+                            </p>
+                        </a>
+                    @else
+                        <a href="{{ route('mycourse.assignment', ['id' => $task['id']]) }}" class="block my-3 max-w-xs">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <img src="{{ asset('/assets/icon/document_task.svg') }}" alt="icon_documentTask">
+                                    <p class="font-bold text-lg text-primary uppercase">
+                                        {{ $task['nama'] }}</p>
+                                </div>
+                                <span
+                                    class="{{ $task['status'] == 'selesai' ? 'bg-green-400' : 'bg-rose-400' }} text-xs text-white font-semibold rounded-full px-3 py-1">{{ $task['status'] == 'selesai' ? 'Done' : 'Working Late' }}</span>
+                            </div>
+                            <p class="text-xs bg-gray-100 w-max p-1 rounded-md m-2"><b>Deadline:</b>
+                                {{ $task['deadline'] }}
+                            </p>
+                        </a>
+                    @endif
                 @endforeach
             @else
                 <h6 class="font-semibold text-primary">Task kosong...</h6>

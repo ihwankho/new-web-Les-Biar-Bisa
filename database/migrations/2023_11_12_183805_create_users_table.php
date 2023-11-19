@@ -17,12 +17,10 @@ return new class extends Migration
             $table->string('fullname');
             $table->string('password');
             $table->unsignedBigInteger('id_tingkatan');
-            $table->unsignedBigInteger('id_course');
             $table->rememberToken();
             $table->timestamps();
 
             $table->foreign('id_tingkatan')->references('id')->on('Tingkatan');
-            $table->foreign('id_course')->references('id')->on('Course');
         });
     }
 

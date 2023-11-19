@@ -15,8 +15,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_assignment');
-            $table->string('nilai');
-            $table->string('catatan');
+            $table->string('url');
+            $table->string('file');
+            $table->enum('status', ['belum_selesai', 'terlambat', 'selesai']);
+            $table->string('nilai')->nullable();
+            $table->string('catatan')->nullable();
             $table->timestamps();
 
             $table->foreign('id_user')->references('id')->on('Users');

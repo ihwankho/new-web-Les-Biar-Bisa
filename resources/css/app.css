@@ -29,6 +29,14 @@
     }
 
     .btn {
-        @apply p-2 text-xs font-semibold text-white bg-primary rounded-md;
+        @apply p-2 font-semibold text-white bg-primary rounded-md;
+    }
+
+    .btn-warning {
+        @apply p-2 font-semibold text-white bg-orange-400 rounded-md;
+    }
+
+    .btn-danger {
+        @apply p-2 font-semibold text-white bg-rose-400 rounded-md;
     }
 }

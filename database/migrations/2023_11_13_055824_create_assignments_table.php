@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('catatan');
-            $table->string('url');
-            $table->string('file');
+            $table->dateTime('deadline');
+            $table->enum('metode_pengumpulan', ['url', 'file', 'semua']);
             $table->unsignedBigInteger('id_course');
             $table->timestamps();
 
