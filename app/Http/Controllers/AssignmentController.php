@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assignment;
+use App\Models\Course;
+use App\Models\FileCourse;
+use App\Models\Score;
+use DateTime;
 use Illuminate\Http\Request;
 
 class AssignmentController extends Controller
@@ -12,7 +16,45 @@ class AssignmentController extends Controller
      */
     public function index()
     {
-        return view('users.page.assignment.index');
+        $courses = Course::all();
+
+        $file_course = FileCourse::all();
+
+        $scores = Score::where('id_user', '=', 1)->get();
+
+        $data = collect([]);
+
+        foreach ($courses as $course) {
+            $temporary = collect([]);
+            $assignment = Assignment::where('id_course', $course->id)->get();
+            foreach ($assignment as $task) {
+                $dateString = $task->deadline;
+                $dateTime = new DateTime($dateString);
+                $formattedDate = $dateTime->format('d F Y H:i:s');
+
+                $taskData = [
+                    "id" => $task->id,
+                    "nama" => $task->nama,
+                    "deadline" => $formattedDate,
+                ];
+
+                $foundScore = $scores->firstWhere('id_assignment', $task->id);
+
+                if ($foundScore) {
+                    $taskData["status"] = $foundScore->status;
+                } else {
+                    $taskData["status"] = "belum selesai";
+                }
+
+                $temporary->push($taskData);
+            }
+            $data->push([
+                "course" => $course->nama,
+                "assignment" => $temporary
+            ]);
+        }
+
+        return view('users.page.assignment.index', compact('data'));
     }
 
     /**

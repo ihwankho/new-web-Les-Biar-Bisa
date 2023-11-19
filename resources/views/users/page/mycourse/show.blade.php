@@ -3,7 +3,7 @@
 @section('title', 'Detail Course')
 
 @section('content')
-    <h1 class="font-extrabold text-lg text-primary uppercase">{{ $course->nama }}</h1>
+    <h1 class="font-extrabold text-lg text-primary uppercase">{{ $course['nama'] }}</h1>
     <p class="font-semibold text-primary">{{ $course->deskripsi }}</p>
     <div class="mt-5 grid grid-cols-2 gap-3 justify-between">
         <div>
@@ -24,7 +24,7 @@
             @if ($data->count() > 0)
                 @foreach ($data as $task)
                     @if ($task['status'] == 'belum selesai')
-                        <a href="{{ route('mycourse.task', ['id' => $task['id']]) }}" class="block my-3 max-w-xs">
+                        <a href="/mycourse/task/{{ $task['id'] }}" class="block my-3 max-w-xs">
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center gap-3">
                                     <img src="{{ asset('/assets/icon/document_task.svg') }}" alt="icon_documentTask">
@@ -38,7 +38,7 @@
                             </p>
                         </a>
                     @else
-                        <a href="{{ route('mycourse.assignment', ['id' => $task['id']]) }}" class="block my-3 max-w-xs">
+                        <a href="/mycourse/assignment/{{ $task['id'] }}" class="block my-3 max-w-xs">
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center gap-3">
                                     <img src="{{ asset('/assets/icon/document_task.svg') }}" alt="icon_documentTask">

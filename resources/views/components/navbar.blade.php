@@ -2,8 +2,6 @@
         $page = request()->segment(1);
     @endphp
 
-
-
     <nav class="shadow-md h-screen overflow-y-auto relative w-80">
         <h1 class="text-3xl w-max p-5 my-12 font-extrabold text-primary text-center">LES BIAR BISA</h1>
         <div class="pr-5 flex flex-col gap-4 menu-sidebar">

@@ -90,7 +90,7 @@ class CourseController extends Controller
             "id" => $assignment->id,
             "assignment_nama" => $assignment->nama,
             "course_nama" => $course->nama,
-            "deadline" => $assignment->deadline,
+            "deadline" => $this->convertDate($assignment->deadline),
             "waktu_pengajuan" => $this->convertDate($foundScore->created_at),
             "url" => $foundScore->url,
             "file" => $foundScore->file,
@@ -130,6 +130,33 @@ class CourseController extends Controller
         ]);
 
         return redirect('/mycourse');
+    }
+
+    public function storeass(Request $request)
+    {
+        $id_assignment = $request->query('id_assignment');
+
+        $task = Assignment::where('id', '=', $id_assignment)->first();
+
+        $status = "";
+        $date = time();
+        $taskTime = strtotime($task->deadline);
+
+        if ($date < $taskTime) {
+            $status = "selesai";
+        } else {
+            $status = "terlambat";
+        }
+
+        Score::create([
+            "id_user" => 1,
+            "id_assignment" => $id_assignment,
+            "url" => $request->url,
+            "file" => $request->file,
+            "status" => $status
+        ]);
+
+        return redirect('/assignment');
     }
 
     /**
