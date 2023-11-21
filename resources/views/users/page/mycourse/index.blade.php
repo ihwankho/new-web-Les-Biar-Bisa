@@ -15,7 +15,7 @@
                 </a>
             @endforeach
         @else
-            <h1 class="font-bold text-primary">Data is empty...</h1>
+            <h6 class="font-bold text-primary">Data is empty...</h6>
         @endif
     </div>
 @endsection

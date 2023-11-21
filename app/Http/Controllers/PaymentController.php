@@ -49,9 +49,10 @@ class PaymentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Payment $payment)
+    public function edit(String $id)
     {
-        //
+        $data = Payment::where('id', $id)->first();
+        return view('users.page.payment.edit', compact('data'));
     }
 
     /**
@@ -65,8 +66,11 @@ class PaymentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Payment $payment)
+    public function destroy(String $id)
     {
-        //
+        $payment = Payment::findOrFail($id);
+        $payment->delete();
+
+        return redirect('/payment')->with('success', 'Success delete book data!');
     }
 }
