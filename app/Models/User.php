@@ -19,9 +19,7 @@ class User extends Authenticatable
      */
     protected $table = 'Users';
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'username', 'fullname', 'password', 'id_tingkatan'
     ];
 
     public function tingkatan()

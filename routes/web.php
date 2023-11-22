@@ -66,3 +66,11 @@ Route::post('/admin/payment/{id}', [AdminPaymentController::class, 'destroy']);
 
 // Admin Account
 Route::get('/admin/account', [AdminAccountController::class, 'index']);
+Route::get('/admin/account/create', [AdminAccountController::class, 'create']);
+Route::get('/admin/account/edit/{id}', [AdminAccountController::class, 'edit']);
+Route::put('/admin/account/{id}', [AdminAccountController::class, 'update']);
+Route::post('/admin/account', [AdminAccountController::class, 'store']);
+Route::delete('/admin/account/{id}', [AdminAccountController::class, 'destroy']);
+
+// Admin Course
+Route::get('/admin/course', [AdminCourseController::class, 'index']);

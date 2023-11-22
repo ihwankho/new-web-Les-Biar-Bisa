@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tingkatan;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminAccountController extends Controller
@@ -11,7 +13,10 @@ class AdminAccountController extends Controller
      */
     public function index()
     {
-        return view('admin.page.account.index');
+        $i = 1;
+        $data = User::with('tingkatan')->get();
+
+        return view('admin.page.account.index', compact('data', 'i'));
     }
 
     /**
@@ -19,7 +24,9 @@ class AdminAccountController extends Controller
      */
     public function create()
     {
-        //
+        $tingkatan = Tingkatan::all();
+
+        return view('admin.page.account.create', compact('tingkatan'));
     }
 
     /**
@@ -27,23 +34,25 @@ class AdminAccountController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $password = bcrypt($request->password);
+
+        User::create([
+            "username" => $request->username,
+            "fullname" => $request->fullname,
+            "password" => $password,
+            "id_tingkatan" => $request->tingkatan,
+        ]);
+
+        return redirect('/admin/account')->with('success', 'Success create account');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        //
+        $users = User::findOrFail($id);
+
+        $tingkatan = Tingkatan::all();
+
+        return view('admin.page.account.edit', compact('users', 'tingkatan'));
     }
 
     /**
@@ -51,7 +60,22 @@ class AdminAccountController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $password = $user->password;
+
+        if ($request->password) {
+            $password = bcrypt($request->password);
+        }
+
+        $user->update([
+            "username" => $request->username,
+            "fullname" => $request->fullname,
+            "password" => $password,
+            "tingkatan" => $request->tingkatan,
+        ]);
+
+        return redirect('/admin/account')->with('success', 'Success update account');
     }
 
     /**
@@ -59,6 +83,10 @@ class AdminAccountController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return redirect('/admin/account')->with('success', 'Success delete account');
     }
 }
