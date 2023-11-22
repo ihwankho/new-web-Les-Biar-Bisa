@@ -27,7 +27,7 @@
                 <p class="font-semibold text-xs opacity-30">Working Late</p>
             </div>
             <div class="w-max p-3 mt-2 shadow-lg rounded-lg">
-                <p class="font-extrabold text-lg">8</p>
+                <p class="font-extrabold text-lg">{{ $assignment['misseddeadline'] }}</p>
                 <p class="font-semibold text-xs opacity-30">Missed Deadline</p>
             </div>
         </div>

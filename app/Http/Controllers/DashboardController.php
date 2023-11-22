@@ -22,11 +22,23 @@ class DashboardController extends Controller
         $assignment = Assignment::all();
         $score = Score::all();
         $notdone = 0;
+        $misseddeadline = 0;
 
-        foreach ($score as $sc) {
-            foreach ($assignment as $ass) {
-                if ($ass->id != $sc->id_assignment) {
-                    $notdone++;
+        foreach ($assignment as $ass) {
+            $assignmentDone = false;
+
+            foreach ($score as $sc) {
+                if ($ass->id == $sc->id_assignment) {
+                    $assignmentDone = true;
+                    break;
+                }
+            }
+
+            if (!$assignmentDone) {
+                $notdone++;
+
+                if (time() > strtotime($ass->deadline)) {
+                    $misseddeadline++;
                 }
             }
         }
@@ -35,6 +47,7 @@ class DashboardController extends Controller
             "done" => Score::where('id_user', '=', 1)->where('status', '=', 'selesai')->count(),
             "late" => Score::where('id_user', '=', 1)->where('status', '=', 'terlambat')->count(),
             "notdone" => $notdone,
+            "misseddeadline" => $misseddeadline
         ];
 
         $username = User::firstWhere('username', 'mallexibra');
