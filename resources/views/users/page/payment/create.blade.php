@@ -10,7 +10,7 @@
         </p>
         <p class="font-extrabold">2342 - 23943 - 382498 - 98234</p>
     </div>
-    <form class="flex mt-5 flex-col gap-3" method="POST" enctype="multipart/form-data" action="{{ route('payment.store') }}">
+    <form class="flex mt-5 flex-col gap-3" method="POST" enctype="multipart/form-data" action="/payment">
         @method('POST')
         @csrf
         <table cellpadding="3">

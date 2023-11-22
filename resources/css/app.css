@@ -28,6 +28,18 @@
         @apply font-extrabold text-lg py-3 text-primary;
     }
 
+    .alert-primary {
+        @apply font-medium text-xs w-1/2 p-2 my-3 rounded-md bg-blue-400 text-white;
+    }
+
+    .alert-warning {
+        @apply font-medium text-xs w-1/2 p-2 my-3 rounded-md bg-blue-400 text-white;
+    }
+
+    .alert-danger {
+        @apply font-medium text-xs w-1/2 p-2 my-3 rounded-md bg-blue-400 text-white;
+    }
+
     .btn {
         @apply p-2 font-semibold text-white bg-primary rounded-md;
     }

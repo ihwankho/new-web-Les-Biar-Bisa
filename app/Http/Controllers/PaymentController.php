@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use PDO;
 
 class PaymentController extends Controller
 {
@@ -14,9 +16,9 @@ class PaymentController extends Controller
     public function index()
     {
         $data = Payment::all();
-        $i = 0;
+        $i = 1;
 
-        return view('users.page.payment.index', compact('i', 'data'));
+        return view('users.page.payment.index', compact('data', 'i'));
     }
 
     /**
@@ -32,8 +34,16 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        Payment::create($request->all());
-
+        $file = $request->file('bukti');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('assets/payment'), $fileName);
+        Payment::create([
+            "nama" => $request->nama,
+            "note" => $request->catatan,
+            "bukti" => $fileName,
+            "id_user" => 1
+        ]);
+        // // dd($fileName);
         return redirect('/payment')->with('success', 'Success add payment');
     }
 
@@ -58,9 +68,29 @@ class PaymentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Payment $payment)
+    public function update(Request $request, String $id)
     {
-        //
+        $payment = Payment::find($id);
+
+        if ($payment) {
+            if ($request->hasFile('bukti')) {
+                unlink(public_path('assets/payment/' .  $payment->bukti));
+                $file = $request->file('bukti');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('assets/payment'), $fileName);
+                $payment->update([
+                    "nama" => $request->nama,
+                    "note" => $request->catatan,
+                    "bukti" => $fileName,
+                ]);
+            } else {
+                $payment->update($request->all());
+            }
+        } else {
+            return redirect('/payment')->with('failed', 'Cannot found payment with id' . $id . "!");
+        }
+
+        return redirect('/payment')->with('success', "Edit data success!");
     }
 
     /**
@@ -69,6 +99,11 @@ class PaymentController extends Controller
     public function destroy(String $id)
     {
         $payment = Payment::findOrFail($id);
+
+        if ($payment->bukti) {
+            unlink(public_path('assets/payment/' .  $payment->bukti));
+        }
+
         $payment->delete();
 
         return redirect('/payment')->with('success', 'Success delete book data!');

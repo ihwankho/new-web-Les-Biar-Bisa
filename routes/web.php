@@ -37,6 +37,7 @@ Route::post('/assignment/{id_assignment}', [CourseController::class, 'storeass']
 Route::get('/assignment/assignment/{id}', [CourseController::class, 'assignment'])->name('assignment.assignment');
 Route::resource('/schedule', ScheduleController::class);
 Route::resource('/payment', PaymentController::class);
+Route::post('/payment', [PaymentController::class, 'store']);
 Route::get('/payment/edit/{id}', [PaymentController::class, 'edit']);
 Route::put('/payment/update/{id}', [PaymentController::class, 'update']);
 Route::delete('/payment/delete/{id}', [PaymentController::class, 'destroy']);
