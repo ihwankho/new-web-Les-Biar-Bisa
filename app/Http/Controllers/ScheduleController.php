@@ -23,13 +23,32 @@ class ScheduleController extends Controller
     {
         $schedule = Tingkatan::all();
 
-        // $data = [
-        //     [
-        //         ""
-        //     ]
-        //     ];
+        $data = collect([]);
 
-        return view('users.page.schedule.index', compact('schedule'));
+        foreach ($schedule as $sch) {
+            $nama = "";
+            $schedule = "";
+            if ($sch->nama == "SD") {
+                $nama = "Schedule Sekolah Dasar";
+                $schedule = $sch->jadwal;
+            } else if ($sch->nama == "SMP") {
+                $nama = "Schedule Sekolah Menengah Pertama";
+                $schedule = $sch->jadwal;
+            } else if ($sch->nama == "SMA") {
+                $nama = "Schedule Sekolah Menengah Atas";
+                $schedule = $sch->jadwal;
+            }
+
+            $item = [
+                "id" => $sch->id,
+                "nama" => $nama,
+                "schedule" => $schedule
+            ];
+
+            $data->push($item);
+        }
+
+        return view('admin.page.schedule.index', compact('data'));
     }
 
     /**
@@ -37,7 +56,7 @@ class ScheduleController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.page.schedule.create');
     }
 
     /**
@@ -45,7 +64,16 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $file = $request->file('jadwal');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('/assets/schedule/'), $fileName);
+
+        Tingkatan::create([
+            "nama" => $request->tingkatan,
+            "jadwal" => $fileName
+        ]);
+
+        return redirect('/admin/schedule')->with('success', 'Success add schedule');;
     }
 
     /**
@@ -61,7 +89,9 @@ class ScheduleController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $schedule = Tingkatan::findOrFail($id);
+
+        return view('admin.page.schedule.edit', compact('schedule'));
     }
 
     /**
@@ -69,7 +99,24 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $schedule = Tingkatan::findOrFail($id);
+
+        $fileName = $schedule->jadwal;
+        if ($request->file('jadwal')) {
+            unlink(public_path('/assets/schedule/' . $fileName));
+            $file = $request->file('jadwal');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('/assets/schedule'), $fileName);
+
+            $schedule->update([
+                "nama" => $request->nama,
+                "jadwal" => $fileName,
+            ]);
+        } else {
+            $schedule->update($request->all());
+        }
+
+        return redirect('/admin/schedule')->with('success', 'Success change schedule');
     }
 
     /**
@@ -77,6 +124,14 @@ class ScheduleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $schedule = Tingkatan::findOrFail($id);
+
+        if ($schedule) {
+            unlink(public_path('/assets/schedule/' . $schedule->jadwal));
+        }
+
+        $schedule->delete();
+
+        return redirect('/admin/schedule')->with('success', "Success delete schedule");
     }
 }

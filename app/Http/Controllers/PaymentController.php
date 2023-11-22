@@ -35,13 +35,14 @@ class PaymentController extends Controller
         $file = $request->file('bukti');
         $fileName = time() . '_' . $file->getClientOriginalName();
         $file->move(public_path('assets/payment'), $fileName);
+
         Payment::create([
             "nama" => $request->nama,
             "note" => $request->catatan,
             "bukti" => $fileName,
             "id_user" => 1
         ]);
-        // // dd($fileName);
+
         return redirect('/payment')->with('success', 'Success add payment');
     }
 

@@ -11,9 +11,9 @@
 <body class="font-poppins">
     <div class="flex gap-8 h-screen overflow-hidden">
         @include('components.navbarAdmin')
-        <div class="h-screen w-full pr-9 overflow-y-auto pt-7">
+        <div class="min-h-screen w-full pr-9 overflow-y-auto pt-7">
             @include('components.header')
-            <div class="h-full mt-10">
+            <div class="min-h-full mt-10">
                 @yield('content')
             </div>
             @include('components.footer')
