@@ -7,12 +7,12 @@
 
     <div>
         <a href="/admin/payment"
-            class="py-1 px-2 inline-block text-xs rounded-full border border-primary text-white bg-primary font-semibold">All</a>
+            class="py-1 px-2 inline-block text-xs rounded-full border border-primary text-primary font-semibold">All</a>
         <a href="/admin/payment/come"
             class="py-1 px-2 inline-block text-xs rounded-full border border-primary text-primary font-semibold">Come
             In</a>
         <a href="/admin/payment/approved"
-            class="py-1 px-2 inline-block text-xs rounded-full border border-primary text-primary font-semibold">Approved</a>
+            class="py-1 px-2 inline-block text-xs rounded-full border border-primary text-white bg-primary font-semibold">Approved</a>
         <a href="/admin/payment/unapproved"
             class="py-1 px-2 inline-block text-xs rounded-full border border-primary text-primary font-semibold">Unapproved</a>
     </div>

@@ -44,11 +44,25 @@ Route::post('/payment', [PaymentController::class, 'store']);
 Route::get('/payment/edit/{id}', [PaymentController::class, 'edit']);
 Route::put('/payment/update/{id}', [PaymentController::class, 'update']);
 Route::delete('/payment/delete/{id}', [PaymentController::class, 'destroy']);
+
+// Admin Dashboard
 Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']);
+
+// Admin Schedule
 Route::get('/admin/schedule', [ScheduleController::class, 'admin']);
 Route::post('/admin/schedule', [ScheduleController::class, 'store']);
 Route::get('/admin/schedule/edit/{id}', [ScheduleController::class, 'edit']);
 Route::delete('/admin/schedule/{id}', [ScheduleController::class, 'destroy']);
 Route::put('/admin/schedule/update/{id}', [ScheduleController::class, 'update']);
 Route::get('/admin/schedule/create', [ScheduleController::class, 'create']);
+
+// Admin Payment
 Route::get('/admin/payment', [AdminPaymentController::class, 'index']);
+Route::get('/admin/payment/come', [AdminPaymentController::class, 'come']);
+Route::get('/admin/payment/approved', [AdminPaymentController::class, 'approved']);
+Route::get('/admin/payment/unapproved', [AdminPaymentController::class, 'unapproved']);
+Route::put('/admin/payment/{id}', [AdminPaymentController::class, 'edit']);
+Route::post('/admin/payment/{id}', [AdminPaymentController::class, 'destroy']);
+
+// Admin Account
+Route::get('/admin/account', [AdminAccountController::class, 'index']);
