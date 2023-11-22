@@ -13,7 +13,7 @@
     }
 
     .card {
-        @apply p-3 rounded-md border-2 border-primary w-max min-w-[256px];
+        @apply p-3 rounded-md border-2 border-primary h-full w-max min-w-[256px];
     }
 
     .card-modify {

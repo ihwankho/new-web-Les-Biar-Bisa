@@ -9,5 +9,5 @@ class Assignment extends Model
 {
     use HasFactory;
     protected $table = 'Assignment';
-    protected $fillable = ['nama', 'note', 'url', 'file', 'id_course'];
+    protected $fillable = ['nama', 'catatan', 'metode_pengumpulan', 'deadline', 'id_course'];
 }

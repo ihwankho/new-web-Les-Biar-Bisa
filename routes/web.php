@@ -74,3 +74,12 @@ Route::delete('/admin/account/{id}', [AdminAccountController::class, 'destroy'])
 
 // Admin Course
 Route::get('/admin/course', [AdminCourseController::class, 'index']);
+Route::get('/admin/course/create', [AdminCourseController::class, 'create']);
+Route::get('/admin/course/edit/{id}', [AdminCourseController::class, 'edit']);
+Route::post('/admin/course', [AdminCourseController::class, 'store']);
+Route::put('/admin/course/{id}', [AdminCourseController::class, 'update']);
+Route::get('/admin/course/{id}', [AdminCourseController::class, 'show']);
+Route::get('/admin/course/{id}/materi/add', [AdminCourseController::class, 'addmateri']);
+Route::post('/admin/course/{id}/materi', [AdminCourseController::class, 'storemateri']);
+Route::get('/admin/course/{id}/task/add', [AdminCourseController::class, 'addtask']);
+Route::post('/admin/course/{id}/task', [AdminCourseController::class, 'storetask']);

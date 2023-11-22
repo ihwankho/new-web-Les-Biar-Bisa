@@ -9,7 +9,7 @@
         <div>
             @if ($file_course->count() > 0)
                 @foreach ($file_course as $file)
-                    <a class="flex gap-3 font-medium text-primary items-center"
+                    <a class="flex gap-3 font-medium bg-slate-100 w-1/2 p-2 rounded-md text-primary items-center"
                         href="{{ asset('/assets/course/materi/' . $file->file) }}" download="{{ $file->file }}">
                         <img src="{{ asset('/assets/icon/file.svg') }}" alt="file-icon">
                         <p>{{ $file->nama }}</p>
