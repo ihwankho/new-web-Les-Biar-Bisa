@@ -15,55 +15,55 @@
         @endif
     </div>
     <p class="page-title mt-5">Status Pengajuan Tugas</p>
-    <form class="flex flex-col gap-3" method="POST" enctype="multipart/form-data"
-        action="{{ route('mycourse.store', ['id_assignment' => $data['id']]) }}">
-        @method('POST')
-        @csrf
-        <table class="w-max rounded-md" cellpadding="3">
+    <table class="w-max rounded-md" cellpadding="3">
+        <tr>
+            <td class="font-medium border border-primary px-6 py-3">Status Pengajuan</td>
+            <td class="border border-primary  px-6 py-3">
+                {{ $data['nilai'] == null ? 'Tugas Terkirim' : 'Tugas Sudah Dinilai' }}</td>
+        </tr>
+        <tr>
+            <td class="font-medium border border-primary px-6 py-3">Waktu Pengajuan</td>
+            <td class="border border-primary  px-6 py-3">{{ $data['waktu_pengajuan'] }}</td>
+        </tr>
+        <tr>
+            <td class="font-medium border border-primary px-6 py-3">Nama</td>
+            <td class="border border-primary  px-6 py-3">{{ $data['nama'] }}</td>
+        </tr>
+        @if ($data['url'] != null)
             <tr>
-                <td class="font-medium border border-primary px-6 py-3">Status Pengajuan</td>
-                <td class="border border-primary  px-6 py-3">
-                    {{ $data['nilai'] == null ? 'Tugas Terkirim' : 'Tugas Sudah Dinilai' }}</td>
+                <td class="font-medium border border-primary px-6 py-3">Pengajuan URL</td>
+                <td class="border border-primary  px-6 py-3">{{ $data['url'] }}</td>
             </tr>
+        @endif
+        @if ($data['file'] != null)
             <tr>
-                <td class="font-medium border border-primary px-6 py-3">Waktu Pengajuan</td>
-                <td class="border border-primary  px-6 py-3">{{ $data['waktu_pengajuan'] }}</td>
+                <td class="font-medium border border-primary px-6 py-3">Pengajuan File</td>
+                <td class="border border-primary  px-6 py-3">{{ $data['file'] }}</td>
             </tr>
-            @if ($data['url'] != null)
-                <tr>
-                    <td class="font-medium border border-primary px-6 py-3">Pengajuan URL</td>
-                    <td class="border border-primary  px-6 py-3">{{ $data['url'] }}</td>
-                </tr>
-            @endif
-            @if ($data['file'] != null)
-                <tr>
-                    <td class="font-medium border border-primary px-6 py-3">Pengajuan File</td>
-                    <td class="border border-primary  px-6 py-3">{{ $data['file'] }}</td>
-                </tr>
-            @endif
-            <tr>
-                <td class="font-medium border border-primary px-6 py-3">Nilai</td>
-                <td class="border border-primary  px-6 py-3">
-                    {{ $data['nilai'] != null ? $data['nilai'] . '/100' : 'Belum ada' }}</td>
-            </tr>
-            <tr>
-                <td class="font-medium border border-primary px-6 py-3">Catatan</td>
-                <td class="border border-primary  px-6 py-3">
-                    {{ $data['catatan'] != null ? $data['catatan'] : 'Belum ada' }}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td class="flex items-center gap-3">
-                    <button class="flex items-center gap-2 text-xs btn-warning">
-                        <img src="{{ asset('/assets/icon/exchange.svg') }}" alt="exchange-icon">
-                        <span>Change</span>
-                    </button>
-                    <button class="flex items-center gap-2 text-xs btn-danger">
+        @endif
+        <tr>
+            <td class="font-medium border border-primary px-6 py-3">Nilai</td>
+            <td class="border border-primary  px-6 py-3">
+                {{ $data['nilai'] != null ? $data['nilai'] . '/100' : 'Belum ada' }}</td>
+        </tr>
+        <tr>
+            <td class="font-medium border border-primary px-6 py-3">Catatan</td>
+            <td class="border border-primary  px-6 py-3">
+                {{ $data['catatan'] != null ? $data['catatan'] : 'Belum ada' }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="flex items-center gap-3">
+                <form action="/assignment/delete/{{ $data['id_score'] }}" method="post">
+                    @method('DELETE')
+                    @csrf
+                    <button onclick="return confirm('Are you sure?')" type="submit" name="submit"
+                        class="flex items-center gap-2 text-xs btn-danger">
                         <img src="{{ asset('/assets/icon/remove.svg') }}" alt="remove-icon">
-                        <span>Remove</span>
+                        <span>Remove your assignment</span>
                     </button>
-                </td>
-            </tr>
-        </table>
-    </form>
+                </form>
+            </td>
+        </tr>
+    </table>
 @endsection

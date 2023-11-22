@@ -10,6 +10,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\ScoreController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,8 +34,10 @@ Route::get('/mycourse/task/{id}', [CourseController::class, 'task'])->name('myco
 Route::get('/mycourse/assignment/{id}', [CourseController::class, 'assignment'])->name('mycourse.assignment');
 Route::resource('/assignment', AssignmentController::class);
 Route::get('/assignment/task/{id}', [CourseController::class, 'task'])->name('assignment.task');
-Route::post('/assignment/{id_assignment}', [CourseController::class, 'storeass'])->name('assignment.storeass');
+Route::post('/assignment', [CourseController::class, 'storeass']);
 Route::get('/assignment/assignment/{id}', [CourseController::class, 'assignment'])->name('assignment.assignment');
+Route::get('/assignment/edit/{id}', [CourseController::class, 'edit']);
+Route::delete('/assignment/delete/{id}', [ScoreController::class, 'destroy']);
 Route::resource('/schedule', ScheduleController::class);
 Route::resource('/payment', PaymentController::class);
 Route::post('/payment', [PaymentController::class, 'store']);

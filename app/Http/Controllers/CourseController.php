@@ -88,10 +88,12 @@ class CourseController extends Controller
 
         $data = [
             "id" => $assignment->id,
+            "id_score" => $foundScore->id,
             "assignment_nama" => $assignment->nama,
             "course_nama" => $course->nama,
             "deadline" => $this->convertDate($assignment->deadline),
             "waktu_pengajuan" => $this->convertDate($foundScore->created_at),
+            "nama" => $foundScore->nama,
             "url" => $foundScore->url,
             "file" => $foundScore->file,
             "nilai" => $foundScore->nilai,
@@ -121,19 +123,24 @@ class CourseController extends Controller
             $status = "terlambat";
         }
 
-        $file = $request->file('file');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('assets/assignment'), $fileName);
+        $fileName = null;
+
+        if ($request->file('file')) {
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('assets/assignment'), $fileName);
+        }
 
         Score::create([
             "id_user" => 1,
             "id_assignment" => $id_assignment,
+            "nama" => $request->nama,
             "url" => $request->url,
-            "file" => $$fileName,
+            "file" => $fileName,
             "status" => $status
         ]);
 
-        return redirect('/mycourse');
+        return redirect('/mycourse/assignment/' . $id_assignment);
     }
 
     public function storeass(Request $request)
@@ -141,26 +148,35 @@ class CourseController extends Controller
         $id_assignment = $request->query('id_assignment');
 
         $task = Assignment::where('id', '=', $id_assignment)->first();
-        dd($id_assignment);
-        // $status = "";
-        // $date = time();
-        // $taskTime = strtotime($task->deadline);
 
-        // if ($date < $taskTime) {
-        //     $status = "selesai";
-        // } else {
-        //     $status = "terlambat";
-        // }
+        $status = "";
+        $date = time();
+        $taskTime = strtotime($task->deadline);
 
-        // Score::create([
-        //     "id_user" => 1,
-        //     "id_assignment" => $id_assignment,
-        //     "url" => $request->url,
-        //     "file" => $request->file,
-        //     "status" => $status
-        // ]);
+        if ($date < $taskTime) {
+            $status = "selesai";
+        } else {
+            $status = "terlambat";
+        }
 
-        // return redirect('/assignment');
+        $fileName = null;
+
+        if ($request->file('file')) {
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('assets/assignment'), $fileName);
+        }
+
+        Score::create([
+            "id_user" => 1,
+            "id_assignment" => $id_assignment,
+            "nama" => $request->nama,
+            "url" => $request->url,
+            "file" => $fileName,
+            "status" => $status
+        ]);
+
+        return redirect('/assignment');
     }
 
     /**
@@ -207,9 +223,40 @@ class CourseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Course $course)
+    public function edit(String $id)
     {
-        //
+        $assignment = Assignment::where('id', '=', $id)->first();
+
+        $course = Course::where('id', '=', $assignment->id_course)->first();
+
+        $scores = Score::where('id_user', '=', 1)->get();
+
+        $foundScore = $scores->firstWhere('id_assignment', $assignment->id);
+
+        $status = '';
+        if ($foundScore) {
+            $status = $foundScore->status;
+        } else {
+            $status = "belum selesai";
+        }
+
+        $dateString = $assignment->deadline;
+        $dateTime = new DateTime($dateString);
+        $formattedDate = $dateTime->format('d F Y H:i:s');
+
+        $data = [
+            "id" => $assignment->id,
+            "metode_pengumpulan" => $assignment->metode_pengumpulan,
+            "assignment_nama" => $assignment->nama,
+            "nama" => $foundScore->nama,
+            "url" => $foundScore->url,
+            "file" => $foundScore->file,
+            "course_nama" => $course->nama,
+            "deadline" => $formattedDate,
+            "status" => $status
+        ];
+
+        return view('users.page.assignment.edit', compact('data'));
     }
 
     /**

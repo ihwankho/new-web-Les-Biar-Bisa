@@ -24,7 +24,7 @@
             action="{{ route('mycourse.store', ['id_assignment' => $data['id']]) }}">
         @else
             <form class="flex flex-col gap-3" method="POST" enctype="multipart/form-data"
-                action="{{ route('assignment.storeass', ['id_assignment' => $data['id']]) }}">
+                action="/assignment?id_assignment={{ $data['id'] }}">
     @endif
     @method('POST')
     @csrf
