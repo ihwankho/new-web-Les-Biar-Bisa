@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Assignment;
 use App\Models\Course;
 use App\Models\Score;
 use App\Models\Tingkatan;
@@ -18,10 +19,22 @@ class DashboardController extends Controller
     {
         $course = Course::all()->count();
 
+        $assignment = Assignment::all();
+        $score = Score::all();
+        $notdone = 0;
+
+        foreach ($score as $sc) {
+            foreach ($assignment as $ass) {
+                if ($ass->id != $sc->id_assignment) {
+                    $notdone++;
+                }
+            }
+        }
+
         $assignment = [
             "done" => Score::where('id_user', '=', 1)->where('status', '=', 'selesai')->count(),
             "late" => Score::where('id_user', '=', 1)->where('status', '=', 'terlambat')->count(),
-            "notdone" => Score::where('id_user', '=', 1)->where('status', '=', 'belum_selesai')->count(),
+            "notdone" => $notdone,
         ];
 
         $username = User::firstWhere('username', 'mallexibra');

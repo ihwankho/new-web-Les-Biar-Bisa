@@ -121,11 +121,15 @@ class CourseController extends Controller
             $status = "terlambat";
         }
 
+        $file = $request->file('file');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('assets/assignment'), $fileName);
+
         Score::create([
             "id_user" => 1,
             "id_assignment" => $id_assignment,
             "url" => $request->url,
-            "file" => $request->file,
+            "file" => $$fileName,
             "status" => $status
         ]);
 
@@ -137,26 +141,26 @@ class CourseController extends Controller
         $id_assignment = $request->query('id_assignment');
 
         $task = Assignment::where('id', '=', $id_assignment)->first();
+        dd($id_assignment);
+        // $status = "";
+        // $date = time();
+        // $taskTime = strtotime($task->deadline);
 
-        $status = "";
-        $date = time();
-        $taskTime = strtotime($task->deadline);
+        // if ($date < $taskTime) {
+        //     $status = "selesai";
+        // } else {
+        //     $status = "terlambat";
+        // }
 
-        if ($date < $taskTime) {
-            $status = "selesai";
-        } else {
-            $status = "terlambat";
-        }
+        // Score::create([
+        //     "id_user" => 1,
+        //     "id_assignment" => $id_assignment,
+        //     "url" => $request->url,
+        //     "file" => $request->file,
+        //     "status" => $status
+        // ]);
 
-        Score::create([
-            "id_user" => 1,
-            "id_assignment" => $id_assignment,
-            "url" => $request->url,
-            "file" => $request->file,
-            "status" => $status
-        ]);
-
-        return redirect('/assignment');
+        // return redirect('/assignment');
     }
 
     /**
