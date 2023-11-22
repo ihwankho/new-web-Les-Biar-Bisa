@@ -10,4 +10,9 @@ class Tingkatan extends Model
     use HasFactory;
     protected $table = 'Tingkatan';
     protected $fillable = ['nama', 'jadwal'];
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

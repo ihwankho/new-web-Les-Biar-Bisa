@@ -19,6 +19,19 @@ class ScheduleController extends Controller
         return view('users.page.schedule.index', compact('schedule'));
     }
 
+    public function admin()
+    {
+        $schedule = Tingkatan::all();
+
+        // $data = [
+        //     [
+        //         ""
+        //     ]
+        //     ];
+
+        return view('users.page.schedule.index', compact('schedule'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */

@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
+use App\Models\Score;
+use App\Models\Tingkatan;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminDashboardController extends Controller
@@ -11,7 +15,16 @@ class AdminDashboardController extends Controller
      */
     public function index()
     {
-        return view('admin.page.dashboard.index');
+        $i = 1;
+        $data = [
+            "active_student" => User::all()->count(),
+            "new_assignment" => Score::where('nilai', '!=', null)->count(),
+            "payment" => Payment::where('status', '!=', 'pending')->count(),
+            "schedule" => Tingkatan::all(),
+            "students" => User::with('tingkatan')->get()
+        ];
+
+        return view('admin.page.dashboard.index', compact('data', 'i'));
     }
 
     /**

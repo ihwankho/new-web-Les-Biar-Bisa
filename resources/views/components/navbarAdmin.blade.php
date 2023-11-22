@@ -7,7 +7,7 @@
        <h1 class="text-3xl w-max p-5 my-12 font-extrabold text-primary text-center">LES BIAR BISA</h1>
        <div class="pr-5 flex flex-col gap-4 menu-sidebar">
            <a class="item-nav {{ $page == 'dashboard' ? 'text-white bg-primary' : 'text-primary' }}"
-               href="{{ route('dashboard.index') }}">
+               href="/admin/dashboard">
                <img src="{{ $page == 'dashboard' ? asset('assets/icon/home-light.png') : asset('assets/icon/home-dark.png') }}"
                    alt="images">
                <p class="text-base">DASHBOARD</p>
