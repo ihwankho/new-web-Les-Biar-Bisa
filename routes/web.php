@@ -92,3 +92,5 @@ Route::post('/admin/course/{id}/task', [AdminCourseController::class, 'storetask
 Route::get('/admin/course/task/edit/{id}', [AdminCourseController::class, 'edittask']);
 Route::put('/admin/course/task/edit/{id}', [AdminCourseController::class, 'updatetask']);
 Route::delete('/admin/course/task/delete/{id}', [AdminCourseController::class, 'destroytask']);
+Route::get('/admin/course/task/{id}', [AdminCourseController::class, 'assignment']);
+Route::put('/admin/course/task/{id}', [AdminCourseController::class, 'nilai']);

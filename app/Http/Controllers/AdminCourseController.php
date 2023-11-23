@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Assignment;
 use App\Models\Course;
 use App\Models\FileCourse;
+use App\Models\Score;
 use App\Models\Tingkatan;
+use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
 use PhpParser\Node\Expr\Cast\String_;
@@ -328,5 +330,50 @@ class AdminCourseController extends Controller
         $task->delete();
 
         return redirect('/admin/course/' . $task->id_course)->with('success', 'Success delete materi');
+    }
+
+    public function assignment(String $id)
+    {
+        $score = Score::where('id_assignment', '=', $id)->get();
+
+        $assignment = Assignment::where('id', '=', $id)->first();
+
+        $course = Course::where('id', '=', $assignment->id_course)->first();
+
+        $data = collect([]);
+        foreach ($score as $scr) {
+            $user = User::where('id', '=', 1)->first();
+            $dateString = $scr->created_at;
+            $dateTime = new DateTime($dateString);
+            $formattedDate = $dateTime->format('d F Y H:i:s');
+
+            $item = [
+                "id" => $scr->id,
+                "id_assignment" => $scr->id_assignment,
+                "nama" => $scr->nama,
+                "waktu_pengumpulan" => $formattedDate,
+                "user" => $user->fullname,
+                "file" => $scr->file,
+                "url" => $scr->url,
+                "nilai" => $scr->nilai,
+                "catatan" => $scr->catatan
+            ];
+
+            $data->push($item);
+        }
+
+        return view('admin.page.course.assignment', compact('data', 'assignment', 'course'));
+    }
+
+    public function nilai(Request $request, String $id)
+    {
+        $score = Score::where('id', '=', $id)->first();
+
+        $score->update([
+            "nilai" => $request->nilai,
+            "catatan" => $request->catatan
+        ]);
+
+        return redirect('/admin/course/task/' . $score->id_assignment)->with('success', 'Success add nilai and note');
     }
 }

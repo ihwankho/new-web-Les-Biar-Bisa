@@ -7,7 +7,6 @@
 @endphp
 
 @section('content')
-    <h1 class="font-extrabold text-lg mb-5 text-primary">Hello World!</h1>
     <a href="/admin/course/{{ $page }}/materi/add" class="btn block w-max text-xs mt-5">+ Add Materi</a>
     <div class="my-3">
         @if ($filecourse->count() > 0)
@@ -38,7 +37,7 @@
     <a href="/admin/course/{{ $page }}/task/add" class="btn block w-max text-xs mt-5">+ Add Task</a>
     @if ($tasks->count() > 0)
         @foreach ($tasks as $t)
-            <a href="/mycourse/task/{{ $t['id'] }}" class="block bg-slate-100 p-2 rounded-md w-1/2 my-3 relative">
+            <a href="/admin/course/task/{{ $t['id'] }}" class="block bg-slate-100 p-2 rounded-md w-1/2 my-3 relative">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <img src="{{ asset('/assets/icon/document_task.svg') }}" alt="icon_documentTask">
