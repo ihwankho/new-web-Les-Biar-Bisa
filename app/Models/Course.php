@@ -11,6 +11,11 @@ class Course extends Model
     protected $table = 'Course';
     protected $fillable = ['nama', 'deskripsi', 'thumbnail', 'id_tingkatan'];
 
+    public function tingkatan()
+    {
+        return $this->belongsTo(Tingkatan::class, 'id_tingkatan');
+    }
+
     public function file_course()
     {
         return $this->belongsTo(FileCourse::class);

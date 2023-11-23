@@ -37,6 +37,87 @@ class AdminCourseController extends Controller
         return view('admin.page.course.index', compact('data'));
     }
 
+    public function sd()
+    {
+        $course =
+            Course::with('tingkatan')
+            ->whereHas('tingkatan', function ($query) {
+                $query->where('nama', 'SD');
+            })
+            ->get();
+
+        $data = collect([]);
+
+        foreach ($course as $crs) {
+            $item = [
+                "id" => $crs->id,
+                "nama" => $crs->nama,
+                "thumbnail" => $crs->thumbnail,
+                "materi" => FileCourse::where('id_course', '=', $crs->id)->count(),
+                "assignment" => Assignment::where('id_course', '=', $crs->id)->count(),
+                "tingkatan" => Tingkatan::where('id', '=', $crs->id_tingkatan)->first('nama')
+            ];
+
+            $data->push($item);
+        }
+
+        return view('admin.page.course.sd', compact('data'));
+    }
+
+    public function smp()
+    {
+        $course =
+            Course::with('tingkatan')
+            ->whereHas('tingkatan', function ($query) {
+                $query->where('nama', 'SMP');
+            })
+            ->get();
+
+        $data = collect([]);
+
+        foreach ($course as $crs) {
+            $item = [
+                "id" => $crs->id,
+                "nama" => $crs->nama,
+                "thumbnail" => $crs->thumbnail,
+                "materi" => FileCourse::where('id_course', '=', $crs->id)->count(),
+                "assignment" => Assignment::where('id_course', '=', $crs->id)->count(),
+                "tingkatan" => Tingkatan::where('id', '=', $crs->id_tingkatan)->first('nama')
+            ];
+
+            $data->push($item);
+        }
+
+        return view('admin.page.course.smp', compact('data'));
+    }
+
+    public function sma()
+    {
+        $course =
+            Course::with('tingkatan')
+            ->whereHas('tingkatan', function ($query) {
+                $query->where('nama', 'SMA');
+            })
+            ->get();
+
+        $data = collect([]);
+
+        foreach ($course as $crs) {
+            $item = [
+                "id" => $crs->id,
+                "nama" => $crs->nama,
+                "thumbnail" => $crs->thumbnail,
+                "materi" => FileCourse::where('id_course', '=', $crs->id)->count(),
+                "assignment" => Assignment::where('id_course', '=', $crs->id)->count(),
+                "tingkatan" => Tingkatan::where('id', '=', $crs->id_tingkatan)->first('nama')
+            ];
+
+            $data->push($item);
+        }
+
+        return view('admin.page.course.sma', compact('data'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -182,5 +263,70 @@ class AdminCourseController extends Controller
         ]);
 
         return redirect('/admin/course/' . $id)->with('success', 'Success add assignment');
+    }
+
+    public function editmateri(String $id)
+    {
+        $materi = FileCourse::findOrFail($id);
+
+        return view('admin.page.course.editmateri', compact('materi'));
+    }
+
+    public function updatemateri(Request $request, String $id)
+    {
+        $materi = FileCourse::where('id', '=', $id)->first();
+
+        $fileName = $materi->file;
+
+        if ($request->file('file')) {
+            unlink(public_path('/assets/course/materi/' . $fileName));
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('/assets/course/materi/'), $fileName);
+        }
+
+        $materi->update([
+            "nama" => $request->nama,
+            "file" => $fileName
+        ]);
+
+        return redirect('/admin/course/' . $materi->id_course)->with('success', 'Success edit file');
+    }
+
+    public function destroymateri(String $id)
+    {
+        $materi = FileCourse::where('id', '=', $id)->first();
+
+        unlink(public_path('/assets/course/materi/' . $materi->file));
+
+        $materi->delete();
+
+        return redirect('/admin/course/' . $materi->id_course)->with('success', 'Success delete materi');
+    }
+
+    public function edittask(String $id)
+    {
+        $task = Assignment::findOrFail($id);
+
+        return view('admin.page.course.edittask', compact('task'));
+    }
+
+    public function updatetask(Request $request, String $id)
+    {
+        $task = Assignment::where('id', '=', $id)->first();
+
+        $task->update($request->all());
+
+        return redirect('/admin/course/' . $task->id_course)->with('success', 'Success edit file');
+    }
+
+    public function destroytask(String $id)
+    {
+        $task = Assignment::where('id', '=', $id)->first();
+
+
+        $task->delete();
+
+        return redirect('/admin/course/' . $task->id_course)->with('success', 'Success delete materi');
     }
 }

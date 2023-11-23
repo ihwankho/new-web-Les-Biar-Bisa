@@ -18,10 +18,16 @@
                     <img src="{{ asset('/assets/icon/file.svg') }}" alt="file-icon">
                     <p>{{ $file->nama }}</p>
                     <div class="flex w-max items-center gap-2">
-                        <a href="#" class="grid place-items-center w-max p-1 rounded-md bg-orange-500"><img
-                                width="18" src="{{ asset('/assets/icon/exchange.svg') }}" alt="change-icon" /></a>
-                        <button class="grid place-items-center w-max p-1 rounded-md bg-rose-500"><img width="18"
-                                src="{{ asset('/assets/icon/trash.svg') }}" alt="trash-icon" /></button>
+                        <a href="/admin/course/materi/edit/{{ $file->id }}"
+                            class="grid place-items-center w-max p-1 rounded-md bg-orange-500"><img width="20"
+                                src="{{ asset('/assets/icon/exchange.svg') }}" alt="change-icon" /></a>
+                        <form action="/admin/course/materi/delete/{{ $file->id }}" method="post">
+                            @method('DELETE')
+                            @csrf
+                            <button onclick="return confirm('Are you sure?')"
+                                class="grid place-items-center w-max p-1 rounded-md bg-rose-500"><img width="10"
+                                    src="{{ asset('/assets/icon/trash.svg') }}" alt="trash-icon" /></button>
+                        </form>
                     </div>
                 </a>
             @endforeach
@@ -39,10 +45,16 @@
                         <p class="font-bold text-lg text-primary uppercase">{{ $t['nama'] }}</p>
                     </div>
                     <div class="flex w-max items-center gap-2">
-                        <a href="#" class="grid place-items-center w-max p-1 rounded-md bg-orange-500"><img
-                                width="18" src="{{ asset('/assets/icon/pencil.svg') }}" alt="change-icon" /></a>
-                        <button class="grid place-items-center w-max p-1 rounded-md bg-rose-500"><img width="18"
-                                src="{{ asset('/assets/icon/trash.svg') }}" alt="trash-icon" /></button>
+                        <a href="/admin/course/task/edit/{{ $t['id'] }}"
+                            class="grid place-items-center w-max p-1 rounded-md bg-orange-500"><img width="20"
+                                src="{{ asset('/assets/icon/pencil.svg') }}" alt="change-icon" /></a>
+                        <form action="/admin/course/task/delete/{{ $t['id'] }}" method="post">
+                            @method('DELETE')
+                            @csrf
+                            <button onclick="return confirm('Are you sure?')"
+                                class="grid place-items-center w-max p-1 rounded-md bg-rose-500"><img width="10"
+                                    src="{{ asset('/assets/icon/trash.svg') }}" alt="trash-icon" /></button>
+                        </form>
                     </div>
                 </div>
                 <p class="text-xs bg-gray-100 w-max p-1 rounded-md m-2"><b>Deadline:</b>

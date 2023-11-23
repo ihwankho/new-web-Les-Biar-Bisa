@@ -67,7 +67,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <button class="btn" name="submit" type="submit">Add Materi</button>
+                    <button class="btn" name="submit" type="submit">Add Task</button>
                 </td>
             </tr>
         </table>
