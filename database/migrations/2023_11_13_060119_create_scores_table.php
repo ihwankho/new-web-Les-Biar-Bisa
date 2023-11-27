@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_assignment');
-            $table->string('url');
-            $table->string('file');
+            $table->string('url')->nullable();
+            $table->string('file')->nullable();
             $table->string('nama');
             $table->enum('status', ['belum_selesai', 'terlambat', 'selesai']);
             $table->string('nilai')->nullable();
