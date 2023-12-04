@@ -13,15 +13,15 @@
             @foreach ($filecourse as $file)
                 <div class="flex gap-3 w-max p-2 rounded-md bg-slate-100 font-medium text-primary items-center">
                     <a class="flex gap-3 w-full p-2 rounded-md bg-slate-100 font-medium text-primary items-center"
-                        href="{{ asset('/assets/course/materi' . $file->file) }}"
-                        download="/assets/course/materi/{{ $file->file }}">
+                        href="{{ asset('/assets/course/materi' . $file['file']) }}"
+                        download="/assets/course/materi/{{ $file['file'] }}">
                         <img src="{{ asset('/assets/icon/file.svg') }}" alt="file-icon">
-                        <p>{{ $file->nama }}</p>
+                        <p>{{ $file['nama'] }}</p>
                         <div class="flex w-max items-center gap-2 mr-2">
-                            <a href="/admin/course/materi/edit/{{ $file->id }}"
+                            <a href="/admin/course/materi/edit/{{ $file['id'] }}"
                                 class="grid place-items-center w-max p-1 rounded-md bg-orange-500"><img width="30"
                                     src="{{ asset('/assets/icon/exchange.svg') }}" alt="change-icon" /></a>
-                            <form action="/admin/course/materi/delete/{{ $file->id }}" method="post">
+                            <form action="/admin/course/materi/delete/{{ $file['id'] }}" method="post">
                                 @method('DELETE')
                                 @csrf
                                 <button onclick="return confirm('Are you sure?')"

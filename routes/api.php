@@ -29,21 +29,21 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/users', [StudentController::class, 'index']);
 Route::get('/users/{id}', [StudentController::class, 'show']);
 Route::post('/users', [StudentController::class, 'store']);
-Route::patch('users/{id}', [StudentController::class, 'update']);
+Route::post('users/{id}', [StudentController::class, 'update']);
 Route::delete('users/{id}', [StudentController::class, 'destroy']);
 
 // Tingkatan
 Route::get('/tingkatan', [TingkatanController::class, 'index']);
 Route::get('/tingkatan/{id}', [TingkatanController::class, 'show']);
 Route::post('/tingkatan', [TingkatanController::class, 'store']);
-Route::patch('/tingkatan/{id}', [TingkatanController::class, 'update']);
+Route::post('/tingkatan/{id}', [TingkatanController::class, 'update']);
 Route::delete('/tingkatan/{id}', [TingkatanController::class, 'destroy']);
 
 // Course
 Route::get('/courses', [CourseController::class, 'index']);
 Route::get('/courses/{id}', [CourseController::class, 'show']);
 Route::post('/courses', [CourseController::class, 'store']);
-Route::patch('/courses/{id}', [CourseController::class, 'update']);
+Route::post('/courses/{id}', [CourseController::class, 'update']);
 Route::delete('/courses/{id}', [CourseController::class, 'destroy']);
 
 // Assignment
@@ -57,7 +57,7 @@ Route::delete('/assignments/{id}', [AssignmentController::class, 'destroy']);
 Route::get("/filecourses", [FileCourseController::class, 'index']);
 Route::get("/filecourses/{id}", [FileCourseController::class, 'show']);
 Route::post("/filecourses", [FileCourseController::class, 'store']);
-Route::patch("/filecourses/{id}", [FileCourseController::class, 'update']);
+Route::post("/filecourses/{id}", [FileCourseController::class, 'update']);
 Route::delete("/filecourses/{id}", [FileCourseController::class, 'destroy']);
 
 // Score

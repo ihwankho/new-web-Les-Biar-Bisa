@@ -13,7 +13,7 @@ class StudentController extends Controller
     public function index()
     {
         try {
-            $users = User::all();
+            $users = User::with('tingkatan')->get();
 
             return response()->json([
                 "status" => true,
@@ -85,12 +85,42 @@ class StudentController extends Controller
         try {
             $user = User::findOrFail($id);
 
-            $user->update($request->all());
+            $username = $user->username;
+            if ($request->username) {
+                $username = $request->username;
+            }
+
+            $fullname = $user->fullname;
+            if ($request->fullname) {
+                $fullname = $request->fullname;
+            }
+
+            $id_tingkatan = $user->id_tingkatan;
+            if ($request->tingkatan) {
+                $id_tingkatan = $request->tingkatan;
+            }
+
+            $password = $user->password;
+            if ($request->password) {
+                $password = Hash::make($request->password);
+            }
+
+            $user->update([
+                "username" => $username,
+                "fullname" => $fullname,
+                "id_tingkatan" => $id_tingkatan,
+                "password" => $password
+            ]);
 
             return response()->json([
                 "status" => true,
                 "message" => "EDIT data user by id successfully",
-                "data" => $request->all()
+                "data" => [
+                    "username" => $username,
+                    "fullname" => $fullname,
+                    "id_tingkatan" => $id_tingkatan,
+                    "password" => $password
+                ]
             ]);
         } catch (\Exception $e) {
             return response()->json([

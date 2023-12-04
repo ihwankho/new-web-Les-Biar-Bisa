@@ -4,43 +4,54 @@ namespace App\Http\Controllers;
 
 use App\Models\Tingkatan;
 use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $username = User::firstWhere('username', 'mallexibra');
-        $schedule = Tingkatan::firstWhere('id', $username->id_tingkatan);
+        $client = new Client();
+        $url = env('API_URL');
+
+        $users = json_decode($client->request("GET", $url . '/users')->getBody(), true)['data'];
+
+        $username = null;
+        foreach ($users as $user) {
+            if ($user['username'] == 'mallexibra') {
+                $username = $user;
+            }
+        }
+
+        $schedule = json_decode($client->request("GET", $url . "/tingkatan/" . $username['id_tingkatan'])->getBody(), true)['data'];
 
         return view('users.page.schedule.index', compact('schedule'));
     }
 
     public function admin()
     {
-        $schedule = Tingkatan::all();
+        $client = new Client();
+        $url = env('API_URL');
+        $schedule = json_decode($client->request("GET", $url . '/tingkatan')->getBody(), true)['data'];
 
         $data = collect([]);
 
         foreach ($schedule as $sch) {
             $nama = "";
             $schedule = "";
-            if ($sch->nama == "SD") {
+            if ($sch['nama'] == "SD") {
                 $nama = "Schedule Sekolah Dasar";
-                $schedule = $sch->jadwal;
-            } else if ($sch->nama == "SMP") {
+                $schedule = $sch['jadwal'];
+            } else if ($sch['nama'] == "SMP") {
                 $nama = "Schedule Sekolah Menengah Pertama";
-                $schedule = $sch->jadwal;
-            } else if ($sch->nama == "SMA") {
+                $schedule = $sch['jadwal'];
+            } else if ($sch['nama'] == "SMA") {
                 $nama = "Schedule Sekolah Menengah Atas";
-                $schedule = $sch->jadwal;
+                $schedule = $sch['jadwal'];
             }
 
             $item = [
-                "id" => $sch->id,
+                "id" => $sch['id'],
                 "nama" => $nama,
                 "schedule" => $schedule
             ];
@@ -64,24 +75,30 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        $file = $request->file('jadwal');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('/assets/schedule/'), $fileName);
+        $client = new Client();
+        $url = env("API_URL");
 
-        Tingkatan::create([
-            "nama" => $request->tingkatan,
-            "jadwal" => $fileName
-        ]);
+        $response = json_decode($client->request("POST", $url . "/tingkatan", [
+            "multipart" => [
+                [
+                    "name" => "nama",
+                    "contents" => $request->nama,
+                ], [
+                    "name" => "jadwal",
+                    "contents" => fopen($request->file('jadwal'), 'r'),
+                    "filename" => $request->file('jadwal')->getClientOriginalName(),
+                    "headers" => [
+                        "Content-Type" => "<Content-type header>"
+                    ]
+                ]
+            ]
+        ])->getBody(), true);
+
+        if (!$response['status']) {
+            return redirect('/admin/schedule')->with('failed', 'Failed add schedule');;
+        }
 
         return redirect('/admin/schedule')->with('success', 'Success add schedule');;
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
     }
 
     /**
@@ -89,7 +106,10 @@ class ScheduleController extends Controller
      */
     public function edit(string $id)
     {
-        $schedule = Tingkatan::findOrFail($id);
+        $client = new Client();
+        $url = env('API_URL');
+
+        $schedule = json_decode($client->request("GET",  $url . '/tingkatan/' . $id)->getBody(), true)['data'];
 
         return view('admin.page.schedule.edit', compact('schedule'));
     }
@@ -99,21 +119,38 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $schedule = Tingkatan::findOrFail($id);
+        $client = new Client();
+        $url = env("API_URL");
 
-        $fileName = $schedule->jadwal;
-        if ($request->file('jadwal')) {
-            unlink(public_path('/assets/schedule/' . $fileName));
-            $file = $request->file('jadwal');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('/assets/schedule'), $fileName);
+        if ($request->nama && !$request->hasFile('jadwal')) {
+            $response = json_decode($client->request("POST", $url . "/tingkatan/" . $id, [
+                "multipart" => [
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama,
+                    ]
+                ]
+            ])->getBody(), true)['status'];
+        } else if ($request->nama && $request->hasFile('jadwal')) {
+            $response = json_decode($client->request("POST", $url . "/tingkatan/" . $id, [
+                "multipart" => [
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama,
+                    ], [
+                        "name" => "jadwal",
+                        "contents" => fopen($request->file('jadwal'), 'r'),
+                        "filename" => $request->file('jadwal')->getClientOriginalName(),
+                        "headers" => [
+                            "Content-Type" => "<Content-type header>"
+                        ]
+                    ]
+                ]
+            ])->getBody(), true)['status'];
+        }
 
-            $schedule->update([
-                "nama" => $request->nama,
-                "jadwal" => $fileName,
-            ]);
-        } else {
-            $schedule->update($request->all());
+        if (!$response) {
+            return redirect('/admin/schedule')->with('failed', 'Failed change schedule');
         }
 
         return redirect('/admin/schedule')->with('success', 'Success change schedule');
@@ -124,13 +161,14 @@ class ScheduleController extends Controller
      */
     public function destroy(string $id)
     {
-        $schedule = Tingkatan::findOrFail($id);
+        $client = new Client();
+        $url = env("API_URL");
 
-        if ($schedule) {
-            unlink(public_path('/assets/schedule/' . $schedule->jadwal));
+        $response = json_decode($client->request("DELETE", $url . "/tingkatan/" . $id)->getBody(), true)['status'];
+
+        if (!$response) {
+            return redirect('/admin/schedule')->with('failed', "Failed delete schedule");
         }
-
-        $schedule->delete();
 
         return redirect('/admin/schedule')->with('success', "Success delete schedule");
     }

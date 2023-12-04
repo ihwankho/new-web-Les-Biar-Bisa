@@ -9,6 +9,7 @@ use App\Models\Score;
 use App\Models\Tingkatan;
 use App\Models\User;
 use DateTime;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use PhpParser\Node\Expr\Cast\String_;
 
@@ -19,45 +20,98 @@ class AdminCourseController extends Controller
      */
     public function index()
     {
-        $course = Course::all();
+        $client = new Client();
+        $url = env('API_URL');
 
+        $course = json_decode($client->request("GET", $url . "/courses")->getBody(), true)['data'];
+        $fileCourses = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+        $assignment = json_decode($client->request("GET", $url . "/assignments")->getBody(), true)['data'];
+        $tingkatan = json_decode($client->request("GET", $url . "/tingkatan")->getBody(), true)['data'];
         $data = collect([]);
 
         foreach ($course as $crs) {
+            $materi = 0;
+            foreach ($fileCourses as $file) {
+                if ($file['id_course'] == $crs['id']) {
+                    $materi++;
+                }
+            }
+
+            $task = 0;
+            foreach ($assignment as $assign) {
+                if ($assign['id_course'] == $crs['id']) {
+                    $task++;
+                }
+            }
+
+            $ting = "";
+            foreach ($tingkatan as $tingkat) {
+                if ($tingkat['id'] == $crs['id_tingkatan']) {
+                    $ting = $tingkat['nama'];
+                    break;
+                }
+            }
+
             $item = [
-                "id" => $crs->id,
-                "nama" => $crs->nama,
-                "thumbnail" => $crs->thumbnail,
-                "materi" => FileCourse::where('id_course', '=', $crs->id)->count(),
-                "assignment" => Assignment::where('id_course', '=', $crs->id)->count(),
-                "tingkatan" => Tingkatan::where('id', '=', $crs->id_tingkatan)->first('nama')
+                "id" => $crs['id'],
+                "nama" => $crs['nama'],
+                "thumbnail" => $crs['thumbnail'],
+                "materi" => $materi,
+                "assignment" => $task,
+                "tingkatan" => $ting
             ];
 
             $data->push($item);
         }
+
+
 
         return view('admin.page.course.index', compact('data'));
     }
 
     public function sd()
     {
-        $course =
-            Course::with('tingkatan')
-            ->whereHas('tingkatan', function ($query) {
-                $query->where('nama', 'SD');
-            })
-            ->get();
+        $client = new Client();
+        $url = env("API_URL");
+        $courses = json_decode($client->request("GET", $url . "/courses")->getBody(), true)['data'];
+
+        $course = collect([]);
+        foreach ($courses as $cours) {
+            if ($cours['tingkatan']['nama'] == 'SD') {
+                $course->push($cours);
+            }
+        }
+
 
         $data = collect([]);
 
         foreach ($course as $crs) {
+            $materi = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+            $countMateri = 0;
+            foreach ($materi as $mtr) {
+                if ($mtr['id_course'] == $crs['id']) {
+                    $countMateri++;
+                }
+            }
+
+            $assignments = json_decode($client->request("GET", $url . "/assignments")->getBody(), true)['data'];
+            $countAssignment = 0;
+            foreach ($assignments as $ass) {
+                if ($ass['id_course'] == $crs['id']) {
+                    $countAssignment++;
+                }
+            }
+
+            $tingkatan =
+                json_decode($client->request("GET", $url . "/tingkatan/" . $crs['id_tingkatan'])->getBody(), true)['data'];
+
             $item = [
-                "id" => $crs->id,
-                "nama" => $crs->nama,
-                "thumbnail" => $crs->thumbnail,
-                "materi" => FileCourse::where('id_course', '=', $crs->id)->count(),
-                "assignment" => Assignment::where('id_course', '=', $crs->id)->count(),
-                "tingkatan" => Tingkatan::where('id', '=', $crs->id_tingkatan)->first('nama')
+                "id" => $crs['id'],
+                "nama" => $crs['nama'],
+                "thumbnail" => $crs['thumbnail'],
+                "materi" => $countAssignment,
+                "assignment" => $countAssignment,
+                "tingkatan" => $tingkatan
             ];
 
             $data->push($item);
@@ -68,23 +122,46 @@ class AdminCourseController extends Controller
 
     public function smp()
     {
-        $course =
-            Course::with('tingkatan')
-            ->whereHas('tingkatan', function ($query) {
-                $query->where('nama', 'SMP');
-            })
-            ->get();
+        $client = new Client();
+        $url = env("API_URL");
+        $courses = json_decode($client->request("GET", $url . "/courses")->getBody(), true)['data'];
+
+        $course = collect([]);
+        foreach ($courses as $cours) {
+            if ($cours['tingkatan']['nama'] == 'SMP') {
+                $course->push($cours);
+            }
+        }
 
         $data = collect([]);
 
         foreach ($course as $crs) {
+            $materi = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+            $countMateri = 0;
+            foreach ($materi as $mtr) {
+                if ($mtr['id_course'] == $crs['id']) {
+                    $countMateri++;
+                }
+            }
+
+            $assignments = json_decode($client->request("GET", $url . "/assignments")->getBody(), true)['data'];
+            $countAssignment = 0;
+            foreach ($assignments as $ass) {
+                if ($ass['id_course'] == $crs['id']) {
+                    $countAssignment++;
+                }
+            }
+
+            $tingkatan =
+                json_decode($client->request("GET", $url . "/tingkatan/" . $crs['id_tingkatan'])->getBody(), true)['data'];
+
             $item = [
-                "id" => $crs->id,
-                "nama" => $crs->nama,
-                "thumbnail" => $crs->thumbnail,
-                "materi" => FileCourse::where('id_course', '=', $crs->id)->count(),
-                "assignment" => Assignment::where('id_course', '=', $crs->id)->count(),
-                "tingkatan" => Tingkatan::where('id', '=', $crs->id_tingkatan)->first('nama')
+                "id" => $crs['id'],
+                "nama" => $crs['nama'],
+                "thumbnail" => $crs['thumbnail'],
+                "materi" => $countAssignment,
+                "assignment" => $countAssignment,
+                "tingkatan" => $tingkatan
             ];
 
             $data->push($item);
@@ -95,23 +172,46 @@ class AdminCourseController extends Controller
 
     public function sma()
     {
-        $course =
-            Course::with('tingkatan')
-            ->whereHas('tingkatan', function ($query) {
-                $query->where('nama', 'SMA');
-            })
-            ->get();
+        $client = new Client();
+        $url = env("API_URL");
+        $courses = json_decode($client->request("GET", $url . "/courses")->getBody(), true)['data'];
+
+        $course = collect([]);
+        foreach ($courses as $cours) {
+            if ($cours['tingkatan']['nama'] == 'SMA') {
+                $course->push($cours);
+            }
+        }
 
         $data = collect([]);
 
         foreach ($course as $crs) {
+            $materi = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+            $countMateri = 0;
+            foreach ($materi as $mtr) {
+                if ($mtr['id_course'] == $crs['id']) {
+                    $countMateri++;
+                }
+            }
+
+            $assignments = json_decode($client->request("GET", $url . "/assignments")->getBody(), true)['data'];
+            $countAssignment = 0;
+            foreach ($assignments as $ass) {
+                if ($ass['id_course'] == $crs['id']) {
+                    $countAssignment++;
+                }
+            }
+
+            $tingkatan =
+                json_decode($client->request("GET", $url . "/tingkatan/" . $crs['id_tingkatan'])->getBody(), true)['data'];
+
             $item = [
-                "id" => $crs->id,
-                "nama" => $crs->nama,
-                "thumbnail" => $crs->thumbnail,
-                "materi" => FileCourse::where('id_course', '=', $crs->id)->count(),
-                "assignment" => Assignment::where('id_course', '=', $crs->id)->count(),
-                "tingkatan" => Tingkatan::where('id', '=', $crs->id_tingkatan)->first('nama')
+                "id" => $crs['id'],
+                "nama" => $crs['nama'],
+                "thumbnail" => $crs['thumbnail'],
+                "materi" => $countAssignment,
+                "assignment" => $countAssignment,
+                "tingkatan" => $tingkatan
             ];
 
             $data->push($item);
@@ -125,7 +225,9 @@ class AdminCourseController extends Controller
      */
     public function create()
     {
-        $tingkatan = Tingkatan::all();
+        $client = new Client();
+        $url = env("API_URL");
+        $tingkatan = json_decode($client->request("GET", $url . '/tingkatan')->getBody(), true)['data'];
 
         return view('admin.page.course.create', compact('tingkatan'));
     }
@@ -135,16 +237,37 @@ class AdminCourseController extends Controller
      */
     public function store(Request $request)
     {
-        $file = $request->file('thumbnail');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('/assets/course'), $fileName);
+        $client = new Client();
+        $url = env("API_URL");
 
-        Course::create([
-            "nama" => $request->nama,
-            "deskripsi" => $request->deskripsi,
-            "id_tingkatan" => $request->tingkatan,
-            "thumbnail" => $fileName
-        ]);
+        $response = json_decode($client->request("POST", $url . '/courses', [
+            "multipart" => [
+                [
+                    "name" => "nama",
+                    "contents" => $request->nama,
+                ],
+                [
+                    "name" => "deskripsi",
+                    "contents" => $request->deskripsi,
+                ],
+                [
+                    "name" => "id_tingkatan",
+                    "contents" => $request->tingkatan,
+                ],
+                [
+                    "name" => "thumbnail",
+                    "contents" => fopen($request->file('thumbnail'), 'r'),
+                    "filename" => $request->file('thumbnail')->getClientOriginalName(),
+                    "headers" => [
+                        "Content-Type" => "<Content-type header>"
+                    ]
+                ]
+            ]
+        ])->getBody(), true)['status'];
+
+        if (!$response) {
+            return redirect('/admin/course')->with('failed', 'Failed add course');
+        }
 
         return redirect('/admin/course')->with('success', 'Success add course');
     }
@@ -154,12 +277,28 @@ class AdminCourseController extends Controller
      */
     public function show(string $id)
     {
-        $filecourse = FileCourse::where('id_course', '=', $id)->get();
-        $task = Assignment::where('id_course', '=', $id)->get();
+        $client = new Client();
+        $url = env("API_URL");
+
+        $filecourses = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+        $filecourse = collect([]);
+        foreach ($filecourses as $file) {
+            if ($file['id_course'] == $id) {
+                $filecourse->push($file);
+            }
+        }
+
+        $task = json_decode($client->request("GET", $url . '/assignments')->getBody(), true)['data'];
+        $task_store = collect([]);
+        foreach ($task as $tas) {
+            if ($tas['id_course'] = $id) {
+                $task_store->push($tas);
+            }
+        }
 
         $tasks = collect([]);
 
-        foreach ($task as $t) {
+        foreach ($task_store as $t) {
             $dateString = $t->deadline;
             $dateTime = new DateTime($dateString);
             $formattedDate = $dateTime->format('d F Y H:i:s');
@@ -168,7 +307,6 @@ class AdminCourseController extends Controller
                 "id" => $t->id,
                 "nama" => $t->nama,
                 "deadline" => $formattedDate
-
             ];
 
             $tasks->push($data);
@@ -182,9 +320,11 @@ class AdminCourseController extends Controller
      */
     public function edit(string $id)
     {
-        $tingkatan = Tingkatan::all();
+        $client = new Client();
+        $url = env("API_URL");
+        $tingkatan = json_decode($client->request("GET", $url . "/tingkatan")->getBody(), true)['data'];
 
-        $course = Course::findOrFail($id);
+        $course = json_decode($client->request("GET", $url . '/courses/' . $id)->getBody(), true)['data'];
 
         return view('admin.page.course.edit', compact('course', 'tingkatan'));
     }
@@ -194,23 +334,56 @@ class AdminCourseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $course = Course::findOrFail($id);
+        $client = new Client();
+        $url = env("API_URL");
 
-        $fileName = $course->thumbnail;
-
-        if ($request->file('thumbnail')) {
-            unlink(public_path('/assets/course/' . $fileName));
-            $file = $request->file('thumbnail');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('/assets/course'), $fileName);
+        if ($request->hasFile('thumbnail')) {
+            $response = json_decode($client->request("POST", $url . "/courses/" . $id, [
+                "multipart" => [
+                    [
+                        "name" => "id_tingkatan",
+                        "contents" => $request->tingkatan
+                    ],
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "deskripsi",
+                        "contents" => $request->deskripsi
+                    ],
+                    [
+                        "name" => "thumbnail",
+                        "contents" => fopen($request->file('thumbnail'), 'r'),
+                        "filename" => $request->file('thumbnail')->getClientOriginalName(),
+                        "headers" => [
+                            "Content-Type" => "<Content-type header>"
+                        ]
+                    ]
+                ]
+            ])->getBody(), true)['status'];
+        } else {
+            $response = json_decode($client->request("POST", $url . "/courses/" . $id, [
+                "multipart" => [
+                    [
+                        "name" => "id_tingkatan",
+                        "contents" => $request->tingkatan
+                    ],
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "deskripsi",
+                        "contents" => $request->deskripsi
+                    ],
+                ]
+            ])->getBody(), true)['status'];
         }
 
-        $course->update([
-            "nama" => $request->nama,
-            "deskripsi" => $request->deskripsi,
-            "thumbnail" => $fileName,
-            "id_tingkatan" => $request->tingkatan
-        ]);
+        if (!$response) {
+            return redirect('/admin/course')->with('failed', 'Failed edit course');
+        }
 
         return redirect('/admin/course')->with('success', 'Success edit course');
     }
@@ -220,79 +393,146 @@ class AdminCourseController extends Controller
      */
     public function destroy(string $id)
     {
-        $course = Course::findOrFail($id);
+        $client = new Client();
+        $url = env("API_URL");
 
-        unlink(public_path('/assets/course/' . $course->thumbnail));
+        $response = json_decode($client->request("DELETE", $url . "/courses/" . $id)->getBody(), true)['status'];
 
-        $course->delete();
+        if (!$response) {
+            return redirect('/admin/course')->with('failed', 'Failed delete course');
+        }
 
         return redirect('/admin/course')->with('success', 'Success delete course');
     }
 
-    public function addmateri(String $id)
+    public function addmateri()
     {
         return view('admin.page.course.addmateri');
     }
 
     public function storemateri(Request $request, String $id)
     {
-        $file = $request->file('file');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('/assets/course/materi/'), $fileName);
+        $client = new Client();
+        $url = env("API_URL");
 
-        FileCourse::create([
-            "nama" => $request->nama,
-            "file" => $fileName,
-            "id_course" => $id
-        ]);
+        $response = json_decode($client->request("POST", $url . "/filecourses", [
+            "multipart" => [
+                [
+                    "name" => "nama",
+                    "contents" => $request->nama
+                ],
+                [
+                    "name" => "id_course",
+                    "contents" => $id
+                ],
+                [
+                    "name" => "file",
+                    "contents" => fopen($request->file('file'), 'r'),
+                    "filename" => $request->file('file')->getClientOriginalName(),
+                    "headers" => [
+                        "Content-Type" => "<Content-type header>"
+                    ]
+                ]
+            ]
+        ])->getBody(), true)['status'];
+
+        if (!$response) {
+            return redirect('/admin/course/' . $id);
+        }
 
         return redirect('/admin/course/' . $id);
     }
 
-    public function addtask(String $id)
+    public function addtask()
     {
         return view('admin.page.course.addtask');
     }
 
     public function storetask(Request $request, String $id)
     {
-        Assignment::create([
-            "nama" => $request->nama,
-            "catatan" => $request->catatan,
-            "deadline" => $request->deadline,
-            "metode_pengumpulan" => $request->pengumpulan,
-            "id_course" => $id
-        ]);
+        $client = new Client();
+        $url = env("API_URL");
+
+        $response = json_decode($client->request("POST", $url . '/assignments', [
+            "multipart" => [
+                [
+                    "name" => "nama",
+                    "contents" => $request->nama
+                ],
+                [
+                    "name" => "catatan",
+                    "contents" => $request->catatan
+                ],
+                [
+                    "name" => "deadline",
+                    "contents" => $request->deadline
+                ],
+                [
+                    "name" => "metode_pengumpulan",
+                    "contents" => $request->pengumpulan
+                ],
+                [
+                    "name" => "id_course",
+                    "contents" => $request->$id
+                ],
+            ]
+        ])->getBody(), true)['status'];
+
+        if (!$response) {
+            return redirect('/admin/course/' . $id)->with('failed', 'Failed add assignment');
+        }
 
         return redirect('/admin/course/' . $id)->with('success', 'Success add assignment');
     }
-
+    // 30 November 2023
     public function editmateri(String $id)
     {
-        $materi = FileCourse::findOrFail($id);
+        $client = new Client();
+        $url = env('API_URL');
+
+        $materi = json_decode($client->request('GET', $url . '/filecourses/' . $id)->getBody(), true)['data'];
 
         return view('admin.page.course.editmateri', compact('materi'));
     }
 
     public function updatemateri(Request $request, String $id)
     {
-        $materi = FileCourse::where('id', '=', $id)->first();
+        $client = new Client();
+        $url = env('API_URL');
 
-        $fileName = $materi->file;
-
-        if ($request->file('file')) {
-            unlink(public_path('/assets/course/materi/' . $fileName));
-            $file = $request->file('file');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('/assets/course/materi/'), $fileName);
+        if ($request->hasFile('file')) {
+            $response = json_decode($client->request("POST", $url . '/filecourses/' . $id, [
+                "multipart" => [
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "file",
+                        "contents" => fopen($request->file('file'), 'r'),
+                        "filename" => $request->file('file')->getClientOriginalName(),
+                        "headers" => [
+                            "Content-Type" => "<Content-type header>"
+                        ]
+                    ]
+                ]
+            ])->getBody(), true);
+        } else {
+            $response = json_decode($client->request("POST", $url . '/filecourses/' . $id, [
+                "multipart" => [
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ]
+                ]
+            ])->getBody(), true);
         }
 
-        $materi->update([
-            "nama" => $request->nama,
-            "file" => $fileName
-        ]);
+        if ($response['status']) {
+            return redirect('/admin/course/' . $response['data_edited']['id_course'])->with('success', 'Success edit file');
+        }
 
-        return redirect('/admin/course/' . $materi->id_course)->with('success', 'Success edit file');
+        return redirect('/admin/course/' . $response['data_edited']['id_course'])->with('success', 'Success edit file');
     }
 
     public function destroymateri(String $id)

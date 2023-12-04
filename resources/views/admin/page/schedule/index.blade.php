@@ -9,8 +9,7 @@
             <p class="page-title">{{ $item['nama'] }}</p>
             <div class="flex gap-3 items-center">
                 <div class="card-modify w-max mb-3">
-                    <img width="426" class="block" src="{{ asset('/assets/schedule/' . $item['schedule']) }}"
-                        alt="image-schedule">
+                    <img width="426" class="block" src="{{ $item['schedule'] }}" alt="image-schedule">
                 </div>
                 <div class="space-y-3">
                     <a href="/admin/schedule/edit/{{ $item['id'] }}"

@@ -12,12 +12,12 @@
         <table cellpadding="3">
             <tr>
                 <td>
-                    <label class="space-x-2" for="tingkatan">
+                    <label class="space-x-2" for="nama">
                         <span class="font-semibold">Tingkatan</span>
                     </label>
                 </td>
                 <td>
-                    <select class="p-2 rounded-md" name="tingkatan" id="tingkatan">
+                    <select class="p-2 rounded-md" name="nama" id="nama">
                         <option disabled value="">Pilih Tingkatan</option>
                         <option value="SD">Sekolah Dasar</option>
                         <option value="SMP">Sekolah Menengah Pertama</option>

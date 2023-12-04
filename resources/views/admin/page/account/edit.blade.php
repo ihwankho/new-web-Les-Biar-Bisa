@@ -1,6 +1,6 @@
 @extends('layout.admin')
 
-@section('title', 'Create Account')
+@section('title', 'Edit Account')
 
 @section('content')
 

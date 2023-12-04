@@ -28,10 +28,9 @@
             @foreach ($data as $item)
                 <div class="card block relative">
                     <a href="/admin/course/{{ $item['id'] }}">
-                        <img class="card-thumbnail" src="{{ asset('/assets/course/' . $item['thumbnail']) }}"
-                            alt="thumbnail-course">
+                        <img class="card-thumbnail" src="{{ $item['thumbnail'] }}" alt="thumbnail-course">
                         <span
-                            class="text-xs absolute top-5 right-5 py-1 px-2 bg-green-500 rounded-full font-medium text-white">{{ $item['tingkatan']['nama'] }}</span>
+                            class="text-xs absolute top-5 right-5 py-1 px-2 bg-green-500 rounded-full font-medium text-white">{{ $item['tingkatan'] }}</span>
                         <h3 class="card-title uppercase">{{ $item['nama'] }}</h3>
                         <p class="text-xs bg-primary p-2 rounded-md w-max text-white font-semibold">{{ $item['materi'] }}
                             Materi

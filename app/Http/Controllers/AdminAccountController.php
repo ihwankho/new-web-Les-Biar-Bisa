@@ -4,17 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Tingkatan;
 use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class AdminAccountController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
+        $client = new Client();
+        $url = env("API_URL");
+
         $i = 1;
-        $data = User::with('tingkatan')->get();
+        $data = json_decode($client->request("GET", $url . '/users')->getBody(), true)['data'];
 
         return view('admin.page.account.index', compact('data', 'i'));
     }
@@ -24,7 +25,10 @@ class AdminAccountController extends Controller
      */
     public function create()
     {
-        $tingkatan = Tingkatan::all();
+        $client = new Client();
+        $url = env("API_URL");
+
+        $tingkatan = json_decode($client->request("GET", $url . '/tingkatan')->getBody(), true)['data'];
 
         return view('admin.page.account.create', compact('tingkatan'));
     }
@@ -34,13 +38,28 @@ class AdminAccountController extends Controller
      */
     public function store(Request $request)
     {
-        $password = bcrypt($request->password);
+        $client = new Client();
+        $url = env("API_URL");
 
-        User::create([
-            "username" => $request->username,
-            "fullname" => $request->fullname,
-            "password" => $password,
-            "id_tingkatan" => $request->tingkatan,
+        $client->request("POST", $url . '/users', [
+            "multipart" => [
+                [
+                    "name" => "username",
+                    "contents" => $request->username
+                ],
+                [
+                    "name" => "fullname",
+                    "contents" => $request->fullname
+                ],
+                [
+                    "name" => "password",
+                    "contents" => $request->password
+                ],
+                [
+                    "name" => "id_tingkatan",
+                    "contents" => $request->tingkatan
+                ],
+            ]
         ]);
 
         return redirect('/admin/account')->with('success', 'Success create account');
@@ -60,20 +79,33 @@ class AdminAccountController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = User::findOrFail($id);
+        $client = new Client();
+        $url = env('API_URL');
 
-        $password = $user->password;
+        $response = json_decode($client->request('POST', $url . '/users/' . $id, [
+            "multipart" => [
+                [
+                    "name" => "username",
+                    "contents" => $request->username
+                ],
+                [
+                    "name" => "fullname",
+                    "contents" => $request->fullname
+                ],
+                [
+                    "name" => "password",
+                    "contents" => $request->password
+                ],
+                [
+                    "name" => "tingkatan",
+                    "contents" => $request->tingkatan
+                ],
+            ]
+        ])->getBody())->status;
 
-        if ($request->password) {
-            $password = bcrypt($request->password);
+        if (!$response) {
+            return redirect('/admin/account')->with('failed', 'Failed update account');
         }
-
-        $user->update([
-            "username" => $request->username,
-            "fullname" => $request->fullname,
-            "password" => $password,
-            "tingkatan" => $request->tingkatan,
-        ]);
 
         return redirect('/admin/account')->with('success', 'Success update account');
     }
@@ -83,9 +115,14 @@ class AdminAccountController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = User::findOrFail($id);
+        $client = new Client();
+        $url = env('API_URL');
 
-        $user->delete();
+        $response = json_decode($client->request('DELETE', $url . '/users/' . $id)->getBody(), true)['status'];
+
+        if (!$response) {
+            return redirect('/admin/account')->with('failed', 'Failed delete account');
+        }
 
         return redirect('/admin/account')->with('success', 'Success delete account');
     }

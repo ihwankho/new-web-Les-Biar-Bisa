@@ -20,12 +20,12 @@
                     <select class="p-2 w-80 rounded-md" name="tingkatan" id="tingkatan">
                         <option disabled selected value="">Pilih Tingkatan</option>
                         @foreach ($tingkatan as $item)
-                            @if ($item->nama == 'SD')
-                                <option value="{{ $item->id }}">Sekolah Dasar</option>
-                            @elseif($item->nama == 'SMP')
-                                <option value="{{ $item->id }}">Sekolah Menengah Pertama</option>
-                            @elseif($item->nama == 'SMA')
-                                <option value="{{ $item->id }}">Sekolah Menengah Atas</option>
+                            @if ($item['nama'] == 'SD')
+                                <option value="{{ $item['id'] }}">Sekolah Dasar</option>
+                            @elseif($item['nama'] == 'SMP')
+                                <option value="{{ $item['id'] }}">Sekolah Menengah Pertama</option>
+                            @elseif($item['nama'] == 'SMA')
+                                <option value="{{ $item['id'] }}">Sekolah Menengah Atas</option>
                             @endif
                         @endforeach
                     </select>

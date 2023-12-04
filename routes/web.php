@@ -53,7 +53,7 @@ Route::get('/admin/schedule', [ScheduleController::class, 'admin']);
 Route::post('/admin/schedule', [ScheduleController::class, 'store']);
 Route::get('/admin/schedule/edit/{id}', [ScheduleController::class, 'edit']);
 Route::delete('/admin/schedule/{id}', [ScheduleController::class, 'destroy']);
-Route::put('/admin/schedule/update/{id}', [ScheduleController::class, 'update']);
+Route::post('/admin/schedule/update/{id}', [ScheduleController::class, 'update']);
 Route::get('/admin/schedule/create', [ScheduleController::class, 'create']);
 
 // Admin Payment
@@ -80,12 +80,13 @@ Route::get('/admin/course/sma', [AdminCourseController::class, 'sma']);
 Route::get('/admin/course/create', [AdminCourseController::class, 'create']);
 Route::get('/admin/course/edit/{id}', [AdminCourseController::class, 'edit']);
 Route::post('/admin/course', [AdminCourseController::class, 'store']);
-Route::put('/admin/course/{id}', [AdminCourseController::class, 'update']);
+Route::post('/admin/course/{id}', [AdminCourseController::class, 'update']);
+Route::delete('/admin/course/{id}', [AdminCourseController::class, 'destroy']);
 Route::get('/admin/course/{id}', [AdminCourseController::class, 'show']);
 Route::get('/admin/course/{id}/materi/add', [AdminCourseController::class, 'addmateri']);
 Route::post('/admin/course/{id}/materi', [AdminCourseController::class, 'storemateri']);
 Route::get('/admin/course/materi/edit/{id}', [AdminCourseController::class, 'editmateri']);
-Route::put('/admin/course/materi/edit/{id}', [AdminCourseController::class, 'updatemateri']);
+Route::post('/admin/course/materi/edit/{id}', [AdminCourseController::class, 'updatemateri']);
 Route::delete('/admin/course/materi/delete/{id}', [AdminCourseController::class, 'destroymateri']);
 Route::get('/admin/course/{id}/task/add', [AdminCourseController::class, 'addtask']);
 Route::post('/admin/course/{id}/task', [AdminCourseController::class, 'storetask']);

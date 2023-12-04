@@ -4,11 +4,11 @@
 
 @section('content')
 
-    <h1 class="page-title">Add New Course</h1>
+    <h1 class="page-title">Edit Course</h1>
 
     <form class="flex mt-5 flex-col gap-3" method="POST" enctype="multipart/form-data"
-        action="/admin/course/{{ $course->id }}">
-        @method('PUT')
+        action="/admin/course/{{ $course['id'] }}">
+        @method('POST')
         @csrf
         <table cellpadding="3">
             <tr>
@@ -18,19 +18,19 @@
                     </label>
                 </td>
                 <td>
-                    <select class="p-2 w-80 rounded-md" name="tingkatan" id="tingkatan">
+                    <select class="p-2 w-80 rounded-md" required name="tingkatan" id="tingkatan">
                         <option disabled selected value="">Pilih Tingkatan</option>
                         @foreach ($tingkatan as $item)
-                            @if ($item->nama == 'SD')
-                                <option value="{{ $item->id }}"
-                                    {{ $course->id_tingkatan == $item->id ? 'selected' : '' }}>Sekolah Dasar</option>
-                            @elseif($item->nama == 'SMP')
-                                <option value="{{ $item->id }}"
-                                    {{ $course->id_tingkatan == $item->id ? 'selected' : '' }}>Sekolah Menengah Pertama
+                            @if ($item['nama'] == 'SD')
+                                <option value="{{ $item['id'] }}"
+                                    {{ $course['id_tingkatan'] == $item['id'] ? 'selected' : '' }}>Sekolah Dasar</option>
+                            @elseif($item['nama'] == 'SMP')
+                                <option value="{{ $item['id'] }}"
+                                    {{ $course['id_tingkatan'] == $item['id'] ? 'selected' : '' }}>Sekolah Menengah Pertama
                                 </option>
-                            @elseif($item->nama == 'SMA')
-                                <option value="{{ $item->id }}"
-                                    {{ $course->id_tingkatan == $item->id ? 'selected' : '' }}>Sekolah Menengah Atas
+                            @elseif($item['nama'] == 'SMA')
+                                <option value="{{ $item['id'] }}"
+                                    {{ $course['id_tingkatan'] == $item['id'] ? 'selected' : '' }}>Sekolah Menengah Atas
                                 </option>
                             @endif
                         @endforeach
@@ -44,8 +44,8 @@
                     </label>
                 </td>
                 <td>
-                    <input class="p-2 w-80 rounded-md text-xs border border-slate-400 outline-none" type="text"
-                        value="{{ $course->nama }}" name="nama" placeholder="Masukkan nama course anda" id="nama">
+                    <input required class="p-2 w-80 rounded-md text-xs border border-slate-400 outline-none" type="text"
+                        value="{{ $course['nama'] }}" name="nama" placeholder="Masukkan nama course anda" id="nama">
                 </td>
             </tr>
             <tr>
@@ -55,8 +55,8 @@
                     </label>
                 </td>
                 <td>
-                    <textarea rows="3" class="p-2 w-80 rounded-md text-xs border border-slate-400 outline-none" type="text"
-                        name="deskripsi" placeholder="Masukkan deskripsi anda" id="deskripsi">{{ $course->deskripsi }}</textarea>
+                    <textarea required rows="3" class="p-2 w-80 rounded-md text-xs border border-slate-400 outline-none"
+                        type="text" name="deskripsi" placeholder="Masukkan deskripsi anda" id="deskripsi">{{ $course['deskripsi'] }}</textarea>
                 </td>
             </tr>
             <tr>
@@ -73,14 +73,13 @@
             <tr>
                 <td></td>
                 <td>
-                    <img class="w-1/2 rounded-md" src="{{ asset('/assets/course/' . $course->thumbnail) }}"
-                        alt="course-image">
+                    <img class="w-1/2 rounded-md" src="{{ $course['thumbnail'] }}" alt="course-image">
                 </td>
             </tr>
             <tr>
                 <td></td>
                 <td>
-                    <button class="btn" name="submit" type="submit">Create Course</button>
+                    <button class="btn" name="submit" type="submit">Edit Course</button>
                 </td>
             </tr>
         </table>

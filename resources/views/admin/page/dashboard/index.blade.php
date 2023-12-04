@@ -30,22 +30,28 @@
     <div class="my-5">
         <div class="flex items-center justify-between">
             <h5 class="page-title">Schedule</h5>
-            <a class="font-medium text-primary" href="/admin/schedule">View All</a>
+            @if (count($data['schedule']) > 0)
+                <a class="font-medium text-primary" href="/admin/schedule">View All</a>
+            @endif
         </div>
         <div class="flex items-center gap-3">
-            @foreach ($data['schedule'] as $schedule)
-                <div class="card-modify w-max space-y-2">
-                    <img width="362" src="{{ asset('/assets/schedule/' . $schedule['jadwal']) }}" alt="schedule-image">
-                    <p class="font-bold text-lg text-primary">Schedule <span
-                            class="uppercase">{{ $schedule['nama'] }}</span></p>
-                </div>
-            @endforeach
+            @if (count($data['schedule']) > 0)
+                @foreach ($data['schedule'] as $schedule)
+                    <div class="card-modify w-max space-y-2">
+                        <img width="362" src={{ $schedule['jadwal'] }} alt="schedule-image">
+                        <p class="font-bold text-lg text-primary">Schedule <span
+                                class="uppercase">{{ $schedule['nama'] }}</span></p>
+                    </div>
+                @endforeach
+            @else
+                <h1>Tidak ada pelajar</h1>
+            @endif
         </div>
     </div>
 
     <div>
         <h5 class="page-title">Your Students</h5>
-        @if ($data['students']->count() > 0)
+        @if (count($data['students']) > 0)
             <div class="relative overflow-x-auto w-max max-w-full sm:rounded-lg">
                 <table class="text-sm text-left rtl:text-center text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-200">
@@ -60,9 +66,9 @@
                         @foreach ($data['students'] as $student)
                             <tr class="font-medium">
                                 <td scope="col" class="px-6 py-3">{{ $i++ }}</td>
-                                <td scope="col" class="px-6 py-3">{{ $student->username }}</td>
-                                <td scope="col" class="px-6 py-3">{{ $student->fullname }}</td>
-                                <td scope="col" class="px-6 py-3">{{ $student->tingkatan['nama'] }}</td>
+                                <td scope="col" class="px-6 py-3">{{ $student['username'] }}</td>
+                                <td scope="col" class="px-6 py-3">{{ $student['fullname'] }}</td>
+                                <td scope="col" class="px-6 py-3">{{ $student['tingkatan']['nama'] }}</td>
                             </tr>
                         @endforeach
                     </tbody>

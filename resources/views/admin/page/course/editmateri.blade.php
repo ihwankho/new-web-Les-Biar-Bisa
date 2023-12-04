@@ -11,8 +11,8 @@
     <h1 class="page-title">Edit Materi</h1>
 
     <form class="flex mt-5 flex-col gap-3" method="POST" enctype="multipart/form-data"
-        action="/admin/course/materi/edit/{{ $materi->id }}">
-        @method('PUT')
+        action="/admin/course/materi/edit/{{ $materi['id'] }}">
+        @method('POST')
         @csrf
         <table cellpadding="3">
             <tr>
@@ -23,7 +23,7 @@
                 </td>
                 <td>
                     <input class="p-2 w-80 rounded-md text-xs border border-slate-400 outline-none" type="text"
-                        value="{{ $materi->nama }}" name="nama" placeholder="Masukkan nama course anda" id="nama">
+                        value="{{ $materi['nama'] }}" name="nama" placeholder="Masukkan nama course anda" id="nama">
                 </td>
             </tr>
             <tr>
@@ -42,7 +42,7 @@
                 <td>
                     <div class="flex gap-3 bg-slate-100 p-2 rounded-md w-max items-center font-medium text-primary">
                         <img width="18" src="{{ asset('/assets/icon/file.svg') }}" alt="icon-file">
-                        <p>{{ $materi->file }}</p>
+                        <p>{{ $materi['file'] }}</p>
                     </div>
                 </td>
             </tr>

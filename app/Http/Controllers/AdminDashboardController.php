@@ -2,76 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
-use App\Models\Score;
-use App\Models\Tingkatan;
-use App\Models\User;
-use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class AdminDashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
+        $client = new Client();
+        $url = env("API_URL");
+
+        $users = json_decode($client->request("GET", $url . '/users')->getBody(), true)['data'];
+        $scores = json_decode($client->request("GET", $url . '/scores')->getBody(), true)['data'];
+        $payments = json_decode($client->request("GET", $url . '/payments')->getBody(), true)['data'];
+        $tingkatan = json_decode($client->request("GET", $url . '/tingkatan')->getBody(), true)['data'];
+
+        $countScore = 0;
+        foreach ($scores as $score) {
+            if ($score['status'] != 'pending') {
+                $countScore++;
+            }
+        }
+
+        $countPayment = 0;
+        foreach ($payments as $payment) {
+            if ($payment['status'] != 'pending') {
+                $countPayment++;
+            }
+        }
+
         $i = 1;
         $data = [
-            "active_student" => User::all()->count(),
-            "new_assignment" => Score::where('nilai', '!=', null)->count(),
-            "payment" => Payment::where('status', '!=', 'pending')->count(),
-            "schedule" => Tingkatan::all(),
-            "students" => User::with('tingkatan')->get()
+            "active_student" => count($users),
+            "new_assignment" => $countScore,
+            "payment" => $countPayment,
+            "schedule" => $tingkatan,
+            "students" => $users
         ];
 
         return view('admin.page.dashboard.index', compact('data', 'i'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

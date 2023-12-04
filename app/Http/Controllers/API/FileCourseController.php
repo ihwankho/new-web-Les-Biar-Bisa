@@ -109,7 +109,6 @@ class FileCourseController extends Controller
             $fileCourse->update([
                 "nama" => $request->nama,
                 "file" => $fileName,
-                "id_course" => $request->id_course
             ]);
 
             return response()->json([
@@ -118,7 +117,7 @@ class FileCourseController extends Controller
                 "data_edited" => [
                     "nama" => $request->nama,
                     "file" => $fileName,
-                    "id_course" => $request->id_course
+                    "id_course" => $fileCourse->id_course
                 ]
             ]);
         } catch (\Exception $e) {

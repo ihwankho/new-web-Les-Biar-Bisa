@@ -12,7 +12,7 @@ class CourseController extends Controller
     public function index()
     {
         try {
-            $courses = Course::all();
+            $courses = Course::with('tingkatan')->get();
 
             for ($i = 0; $i < $courses->count(); $i++) {
                 $courses[$i]['thumbnail'] = url('/assets/course/' . $courses[$i]['thumbnail']);

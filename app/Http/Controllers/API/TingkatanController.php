@@ -133,6 +133,8 @@ class TingkatanController extends Controller
 
             unlink(public_path('/assets/schedule/' . $fileName));
 
+            $tingkatan->delete();
+
             return response()->json([
                 "status" => true,
                 "message" => "DELETE data tingkatan successfully",
