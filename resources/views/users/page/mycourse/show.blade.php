@@ -4,15 +4,15 @@
 
 @section('content')
     <h1 class="font-extrabold text-lg text-primary uppercase">{{ $course['nama'] }}</h1>
-    <p class="font-semibold text-primary">{{ $course->deskripsi }}</p>
+    <p class="font-semibold text-primary">{{ $course['deskripsi'] }}</p>
     <div class="mt-5 grid grid-cols-2 gap-3 justify-between">
         <div>
             @if ($file_course->count() > 0)
                 @foreach ($file_course as $file)
                     <a class="flex gap-3 font-medium bg-slate-100 w-1/2 p-2 rounded-md text-primary items-center"
-                        href="{{ asset('/assets/course/materi/' . $file->file) }}" download="{{ $file->file }}">
+                        href="{{ asset('/assets/course/materi/' . $file['file']) }}" download="{{ $file['file'] }}">
                         <img src="{{ asset('/assets/icon/file.svg') }}" alt="file-icon">
-                        <p>{{ $file->nama }}</p>
+                        <p>{{ $file['nama'] }}</p>
                     </a>
                 @endforeach
             @else

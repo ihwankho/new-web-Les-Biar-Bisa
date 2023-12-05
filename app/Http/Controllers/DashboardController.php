@@ -65,9 +65,9 @@ class DashboardController extends Controller
         $users = json_decode($client->request("GET", $url . "/users")->getBody(), true)['data'];
         $username = "";
         foreach ($users as $usr) {
-            if ($users['username'] == "mallexibra") {
+            if ($usr['username'] == "filfia") {
                 $username = $usr;
-                return;
+                break;
             }
         }
 

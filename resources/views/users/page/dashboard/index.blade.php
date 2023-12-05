@@ -35,7 +35,7 @@
     <div class="pt-7">
         <h5 class="page-title">Your course schedule</h5>
         <div class="w-1/2 p-3 bg-primary rounded-lg mt-3">
-            <img src="{{ asset('/assets/schedule/' . $schedule->jadwal) }}" alt="Schedule">
+            <img src="{{ $schedule['jadwal'] }}" alt="Schedule">
         </div>
     </div>
 @endsection

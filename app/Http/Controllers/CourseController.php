@@ -49,7 +49,7 @@ class CourseController extends Controller
             }
         }
 
-        $foundScore = $scores->firstWhere('id_assignment', $assignment->id);
+        $foundScore = $scores->firstWhere('id_assignment', $assignment['id']);
 
         $status = '';
         if ($foundScore) {

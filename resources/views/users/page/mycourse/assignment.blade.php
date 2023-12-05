@@ -32,13 +32,22 @@
         @if ($data['url'] != null)
             <tr>
                 <td class="font-medium border border-primary px-6 py-3">Pengajuan URL</td>
-                <td class="border border-primary  px-6 py-3">{{ $data['url'] }}</td>
+                <td class="border border-primary  px-6 py-3"><a class="text-blue-500 underline" href="{{ $data['url'] }}"
+                        target="_blank" rel="noopener noreferrer">{{ $data['url'] }}</a></td>
             </tr>
         @endif
         @if ($data['file'] != null)
+            @php
+                $name = explode('/', $data['file']);
+                $fileName = $name[count($name) - 1];
+            @endphp
             <tr>
                 <td class="font-medium border border-primary px-6 py-3">Pengajuan File</td>
-                <td class="border border-primary  px-6 py-3">{{ $data['file'] }}</td>
+                <td class="border border-primary  px-6 py-3"><a
+                        class="inline-block py-2 px-3 text-white rounded-md font-medium text-xs bg-primary"
+                        href="{{ asset('/assets/assignment/' . $fileName) }}" download="{{ $fileName }}">
+                        {{ $fileName }}
+                    </a></td>
             </tr>
         @endif
         <tr>

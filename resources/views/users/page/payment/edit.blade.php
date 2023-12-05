@@ -11,7 +11,7 @@
         <p class="font-extrabold">2342 - 23943 - 382498 - 98234</p>
     </div>
     <form class="flex mt-5 flex-col gap-3" method="POST" enctype="multipart/form-data"
-        action="/payment/update/{{ $data->id }}">
+        action="/payment/update/{{ $data['id'] }}">
         @method('PUT')
         @csrf
         <table cellpadding="3">
@@ -23,7 +23,7 @@
                 </td>
                 <td>
                     <input class="p-2 w-80 rounded-md text-xs border border-slate-400 outline-none" type="text"
-                        value="{{ $data->nama }}" name="nama" placeholder="Berikan nama pembayaran..." id="nama">
+                        value="{{ $data['nama'] }}" name="nama" placeholder="Berikan nama pembayaran..." id="nama">
                 </td>
             </tr>
             <tr>
@@ -34,7 +34,7 @@
                 </td>
                 <td>
                     <input class="p-2 w-80 rounded-md text-xs border border-slate-400 outline-none" type="text"
-                        value="{{ $data->note }}" name="catatan" placeholder="Berikan catatan..." id="catatan">
+                        value="{{ $data['note'] }}" name="catatan" placeholder="Berikan catatan..." id="catatan">
                 </td>
             </tr>
             <tr>
@@ -50,7 +50,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <img width="132" src="{{ asset('/assets/payment/' . $data->bukti) }}" alt="image-payment">
+                    <img width="132" src="{{ $data['bukti'] }}" alt="image-payment">
                 </td>
             </tr>
             <tr>

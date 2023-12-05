@@ -15,7 +15,7 @@ class PaymentController extends Controller
             $payments = Payment::with('users')->get();
 
             for ($i = 0; $i < $payments->count(); $i++) {
-                $payments[$i]['bukti'] = url(public_path('/assets/payment/' . $payments[$i]['bukti']));
+                $payments[$i]['bukti'] = url("/assets/payment/" . $payments[$i]['bukti']);
             }
 
             return response()->json([
@@ -37,7 +37,7 @@ class PaymentController extends Controller
             $payment = Payment::findOrFail($id);
 
 
-            $payment['bukti'] = url(public_path('/assets/payment/' . $payment['bukti']));
+            $payment['bukti'] = url("/assets/payment/" . $payment['bukti']);
 
 
             return response()->json([
@@ -121,6 +121,11 @@ class PaymentController extends Controller
                 $nama = $request->nama;
             }
 
+            $status = $payment->status;
+            if ($request->status) {
+                $status = $request->status;
+            }
+
             $note = $payment->note;
             if ($request->note) {
                 $note = $request->note;
@@ -128,6 +133,7 @@ class PaymentController extends Controller
 
             $payment->update([
                 "nama" => $nama,
+                "status" => $status,
                 "note" => $note,
                 "bukti" => $fileName,
             ]);

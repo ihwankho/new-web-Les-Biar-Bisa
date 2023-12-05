@@ -18,7 +18,7 @@ class ScheduleController extends Controller
 
         $username = null;
         foreach ($users as $user) {
-            if ($user['username'] == 'mallexibra') {
+            if ($user['username'] == 'filfia') {
                 $username = $user;
             }
         }

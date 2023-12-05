@@ -5,12 +5,11 @@
 @section('content')
     <h1 class="page-title">Your Course</h1>
     <div class="flex items-start gap-3">
-        @if ($courses->count() > 0)
+        @if (count($courses) > 0)
             @foreach ($courses as $course)
-                <a href="{{ route('mycourse.show', ['mycourse' => $course->id]) }}" class="card block">
-                    <img class="card-thumbnail" src="{{ asset('/assets/course/' . $course->thumbnail) }}"
-                        alt="Thumbnail-Course">
-                    <h3 class="card-title">{{ $course->nama }}</h3>
+                <a href="{{ route('mycourse.show', ['mycourse' => $course['id']]) }}" class="card block">
+                    <img class="card-thumbnail" src="{{ $course['thumbnail'] }}" alt="Thumbnail-Course">
+                    <h3 class="card-title">{{ $course['nama'] }}</h3>
                     <p class="text-xs bg-primary p-2 rounded-md w-max text-white font-semibold">{{ $file_courses }} Materi |
                         {{ $assignments }} Assignments</p>
                 </a>
