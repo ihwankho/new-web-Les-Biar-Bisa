@@ -18,7 +18,7 @@
     </div>
 
     <div class="mt-5">
-        @if ($data->count() > 0)
+        @if (count($data) > 0)
             @foreach ($data as $pay)
                 <div class="card">
                     <img class="card-thumbnail" src="{{ asset('/assets/payment/' . $pay->bukti) }}" alt="thumbnail-course">

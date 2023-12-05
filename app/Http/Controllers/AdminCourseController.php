@@ -299,13 +299,13 @@ class AdminCourseController extends Controller
         $tasks = collect([]);
 
         foreach ($task_store as $t) {
-            $dateString = $t->deadline;
+            $dateString = $t['deadline'];
             $dateTime = new DateTime($dateString);
             $formattedDate = $dateTime->format('d F Y H:i:s');
 
             $data = [
-                "id" => $t->id,
-                "nama" => $t->nama,
+                "id" => $t['id'],
+                "nama" => $t['nama'],
                 "deadline" => $formattedDate
             ];
 
@@ -473,18 +473,19 @@ class AdminCourseController extends Controller
                 ],
                 [
                     "name" => "id_course",
-                    "contents" => $request->$id
+                    "contents" => $id
                 ],
             ]
-        ])->getBody(), true)['status'];
+        ])->getBody(), true);
 
-        if (!$response) {
+        if (!$response['status']) {
+            dd($response);
             return redirect('/admin/course/' . $id)->with('failed', 'Failed add assignment');
         }
 
         return redirect('/admin/course/' . $id)->with('success', 'Success add assignment');
     }
-    // 30 November 2023
+
     public function editmateri(String $id)
     {
         $client = new Client();
