@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -13,7 +14,9 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $data = Payment::all();
+        $client = new Client();
+        $url = env("API_URL");
+        $data = json_decode($client->request("GET", $url . "/payments")->getBody(), true)['data'];
         $i = 1;
 
         return view('users.page.payment.index', compact('data', 'i'));
@@ -32,18 +35,58 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        $file = $request->file('bukti');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('assets/payment'), $fileName);
+        $client = new Client();
+        $url = env("API_URL");
 
-        Payment::create([
-            "nama" => $request->nama,
-            "note" => $request->catatan,
-            "bukti" => $fileName,
-            "id_user" => 1
-        ]);
+        if ($request->hasFile('bukti')) {
+            $response = json_decode($client->request("POST", $url . "/payments", [
+                "multipart" => [
+                    [
+                        "name" => "id_user",
+                        "contents" => 1
+                    ],
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "note",
+                        "contents" => $request->catatan
+                    ],
+                    [
+                        "name" => "bukti",
+                        "contents" => fopen($request->file('bukti'), 'r'),
+                        "filename" => $request->file('bukti')->getClientOriginalName(),
+                        "headers" => [
+                            "Content-Type" => "<Content-type header>"
+                        ]
+                    ]
+                ]
+            ])->getBody(), true)['status'];
+        } else {
+            $response = json_decode($client->request("POST", $url . "/payments", [
+                "multipart" => [
+                    [
+                        "name" => "id_user",
+                        "contents" => 1
+                    ],
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "note",
+                        "contents" => $request->catatan
+                    ],
+                ]
+            ])->getBody(), true)['status'];
+        }
 
-        return redirect('/payment')->with('success', 'Success add payment');
+        if (!$response) {
+            return redirect('/payment')->with('failed', 'Failed add payment');
+        } else {
+            return redirect('/payment')->with('success', 'Success add payment');
+        }
     }
 
     /**
@@ -51,7 +94,11 @@ class PaymentController extends Controller
      */
     public function show(String $id)
     {
-        $payment = Payment::where('id', $id)->first();
+        $client = new Client();
+        $url = env("API_URL");
+
+        $payment = json_decode($client->request("GET", $url . "/payments/" . $id)->getBody(), true)['data'];
+
         return view('users.page.payment.show', compact('payment'));
     }
 
@@ -60,7 +107,11 @@ class PaymentController extends Controller
      */
     public function edit(String $id)
     {
-        $data = Payment::where('id', $id)->first();
+        $client = new Client();
+        $url = env("API_URL");
+
+        $data = json_decode($client->request("GET", $url . "/payments/" . $id)->getBody(), true)['data'];
+
         return view('users.page.payment.edit', compact('data'));
     }
 
@@ -69,27 +120,50 @@ class PaymentController extends Controller
      */
     public function update(Request $request, String $id)
     {
-        $payment = Payment::find($id);
+        $client = new Client();
+        $url = env("API_URL");
 
-        if ($payment) {
-            if ($request->hasFile('bukti')) {
-                unlink(public_path('assets/payment/' .  $payment->bukti));
-                $file = $request->file('bukti');
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('assets/payment'), $fileName);
-                $payment->update([
-                    "nama" => $request->nama,
-                    "note" => $request->catatan,
-                    "bukti" => $fileName,
-                ]);
-            } else {
-                $payment->update($request->all());
-            }
+        if ($request->hasFile("bukti")) {
+            $response = json_decode($client->request("POST", $url . "/payments/" . $id, [
+                "multipart" => [
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "note",
+                        "contents" => $request->catatan
+                    ],
+                    [
+                        "name" => "bukti",
+                        "contents" => fopen($request->file('bukti'), 'r'),
+                        "filename" => $request->file('bukti')->getClientOriginalName(),
+                        "headers" => [
+                            "Content-Type" => "<Content-type header>"
+                        ]
+                    ]
+                ]
+            ])->getBody(), true)['status'];
         } else {
-            return redirect('/payment')->with('failed', 'Cannot found payment with id' . $id . "!");
+            $response = json_decode($client->request("POST", $url . "/payments/" . $id, [
+                "multipart" => [
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "note",
+                        "contents" => $request->catatan
+                    ],
+                ]
+            ])->getBody(), true)['status'];
         }
 
-        return redirect('/payment')->with('success', "Edit data success!");
+        if (!$response) {
+            return redirect('/payment')->with('failed', "Failed data success!");
+        } else {
+            return redirect('/payment')->with('success', "Edit data success!");
+        }
     }
 
     /**
@@ -97,14 +171,15 @@ class PaymentController extends Controller
      */
     public function destroy(String $id)
     {
-        $payment = Payment::findOrFail($id);
+        $client = new Client();
+        $url = env("API_URL");
 
-        if ($payment->bukti) {
-            unlink(public_path('assets/payment/' .  $payment->bukti));
+        $response = json_decode($client->request("DELETE", $url . "/payments/" . $id)->getBody(), true)['status'];
+
+        if (!$response) {
+            return redirect('/payment')->with('failed', 'Failed delete book data!');
+        } else {
+            return redirect('/payment')->with('success', 'Success delete book data!');
         }
-
-        $payment->delete();
-
-        return redirect('/payment')->with('success', 'Success delete book data!');
     }
 }

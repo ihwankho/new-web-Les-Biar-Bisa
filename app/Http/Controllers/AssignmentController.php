@@ -2,12 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assignment;
-use App\Models\Course;
-use App\Models\FileCourse;
-use App\Models\Score;
 use DateTime;
-use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class AssignmentController extends Controller
 {
@@ -16,92 +12,60 @@ class AssignmentController extends Controller
      */
     public function index()
     {
-        $courses = Course::all();
+        $client = new Client();
+        $url = env("API_URL");
 
-        $file_course = FileCourse::all();
+        $courses = json_decode($client->request("GET", $url . '/courses')->getBody(), true)['data'];
 
-        $scores = Score::where('id_user', '=', 1)->get();
+        $file_course = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+
+        $score = json_decode($client->request("GET", $url . "/scores")->getBody(), true)['data'];
+        $scores = collect([]);
+        foreach ($score as $scr) {
+            if ($scr['id_user'] == 1) {
+                $scores->push($scr);
+            }
+        }
 
         $data = collect([]);
 
         foreach ($courses as $course) {
             $temporary = collect([]);
-            $assignment = Assignment::where('id_course', $course->id)->get();
+            $assignments = json_decode($client->request("GET", $url . '/assignments')->getBody(), true)['data'];
+            $assignment = collect([]);
+            foreach ($assignments as $ass) {
+                if ($ass['id_course'] == $course['id']) {
+                    $assignment->push($ass);
+                }
+            }
             foreach ($assignment as $task) {
-                $dateString = $task->deadline;
+                $dateString = $task['deadline'];
                 $dateTime = new DateTime($dateString);
                 $formattedDate = $dateTime->format('d F Y H:i:s');
 
                 $taskData = [
-                    "id" => $task->id,
-                    "nama" => $task->nama,
+                    "id" => $task['id'],
+                    "nama" => $task['nama'],
                     "deadline" => $formattedDate,
                 ];
 
-                $foundScore = $scores->firstWhere('id_assignment', $task->id);
+                $foundScore = $scores->firstWhere('id_assignment', $task['id']);
 
                 if ($foundScore) {
-                    $taskData["status"] = $foundScore->status;
+                    $taskData["status"] = $foundScore['status'];
                 } else {
                     $taskData["status"] = "belum selesai";
                 }
 
                 $temporary->push($taskData);
             }
+
             $data->push([
-                "course" => $course->nama,
+                "course" => $course['nama'],
                 "assignment" => $temporary
             ]);
         }
 
         return view('users.page.assignment.index', compact('data'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Assignment $assignment)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Assignment $assignment)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Assignment $assignment)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Assignment $assignment)
-    {
-        //
     }
 }

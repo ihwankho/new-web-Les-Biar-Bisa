@@ -3,19 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Score;
+use GuzzleHttp\Client;
 
 class ScoreController extends Controller
 {
     public function destroy(String $id)
     {
-        $score = Score::findOrFail($id);
+        $client = new Client();
+        $url = env("API_URL");
 
-        if ($score->file) {
-            unlink(public_path('/assets/assignment/' . $score->file));
+        $response = json_decode($client->request("DELETE", $url . "/scores/" . $id)->getBody(), true)['status'];
+
+        if (!$response) {
+            return redirect('/assignment');
+        } else {
+            return redirect('/assignment');
         }
-
-        $score->delete();
-
-        return redirect('/assignment');
     }
 }

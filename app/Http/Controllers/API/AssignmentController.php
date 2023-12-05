@@ -89,7 +89,8 @@ class AssignmentController extends Controller
             return response()->json([
                 "status" => true,
                 "message" => "EDIT data assignment successfully",
-                "data_edited" => $request->all()
+                "data_edited" => $request->all(),
+                "id_course" => $assignment->id_course
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -109,6 +110,7 @@ class AssignmentController extends Controller
             return response()->json([
                 "status" => true,
                 "message" => "DELETE data assignment successfully",
+                "id_course" => $assignment->id_course
             ]);
         } catch (\Exception $e) {
             return response()->json([

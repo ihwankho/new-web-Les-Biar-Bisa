@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use DateTime;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class AdminPaymentController extends Controller
@@ -13,13 +14,16 @@ class AdminPaymentController extends Controller
      */
     public function index()
     {
-        $data = Payment::with('users')->get();
+        $client = new Client();
+        $url = env("API_URL");
+
+        $data = json_decode($client->request("GET", $url . '/payments')->getBody(), true)['data'];
 
         $i = 1;
 
         $dateTime = collect([]);
         foreach ($data as $item) {
-            $dateString = $item->created_at;
+            $dateString = $item['created_at'];
             $date = new DateTime($dateString);
             $formattedDate = $date->format('d F Y');
 
@@ -31,13 +35,23 @@ class AdminPaymentController extends Controller
 
     public function come()
     {
-        $data = Payment::where('status', '=', 'pending')->with('users')->get();
+        $client = new Client();
+        $url = env("API_URL");
+
+        $datas = json_decode($client->request("GET", $url . "/payments")->getBody(), true)['data'];
+        $data = collect([]);
+
+        foreach ($datas as $dt) {
+            if ($dt['status'] == "pending") {
+                $data->push($dt);
+            }
+        }
 
         $i = 1;
 
         $dateTime = collect([]);
         foreach ($data as $item) {
-            $dateString = $item->created_at;
+            $dateString = $item['created_at'];
             $date = new DateTime($dateString);
             $formattedDate = $date->format('d F Y');
 
@@ -49,13 +63,23 @@ class AdminPaymentController extends Controller
 
     public function approved()
     {
-        $data = Payment::where('status', '=', 'approved')->get();
+        $client = new Client();
+        $url = env("API_URL");
+
+        $datas = json_decode($client->request("GET", $url . "/payments")->getBody(), true)['data'];
+        $data = collect([]);
+
+        foreach ($datas as $dt) {
+            if ($dt['status'] == "approved") {
+                $data->push($dt);
+            }
+        }
 
         $i = 1;
 
         $dateTime = collect([]);
         foreach ($data as $item) {
-            $dateString = $item->created_at;
+            $dateString = $item['created_at'];
             $date = new DateTime($dateString);
             $formattedDate = $date->format('d F Y');
 
@@ -67,13 +91,23 @@ class AdminPaymentController extends Controller
 
     public function unapproved()
     {
-        $data = Payment::where('status', '=', 'unapproved')->get();
+        $client = new Client();
+        $url = env("API_URL");
+
+        $datas = json_decode($client->request("GET", $url . "/payments")->getBody(), true)['data'];
+        $data = collect([]);
+
+        foreach ($datas as $dt) {
+            if ($dt['status'] == "unapproved") {
+                $data->push($dt);
+            }
+        }
 
         $i = 1;
 
         $dateTime = collect([]);
         foreach ($data as $item) {
-            $dateString = $item->created_at;
+            $dateString = $item['created_at'];
             $date = new DateTime($dateString);
             $formattedDate = $date->format('d F Y');
 
@@ -88,13 +122,23 @@ class AdminPaymentController extends Controller
      */
     public function edit(string $id)
     {
-        $payment = Payment::findOrFail($id);
+        $client = new Client();
+        $url = env("API_URL");
 
-        $payment->update([
-            "status" => "approved"
-        ]);
+        $response = json_decode($client->request("POST", $url . "/payments/" . $id, [
+            "multipart" => [
+                [
+                    "name" => "status",
+                    "contents" => "approved"
+                ]
+            ]
+        ])->getBody(), true)['status'];
 
-        return redirect("/admin/payment");
+        if ($response) {
+            return redirect("/admin/payment");
+        } else {
+            return redirect("/admin/payment");
+        }
     }
 
     /**
@@ -102,12 +146,22 @@ class AdminPaymentController extends Controller
      */
     public function destroy(string $id)
     {
-        $payment = Payment::findOrFail($id);
+        $client = new Client();
+        $url = env("API_URL");
 
-        $payment->update([
-            "status" => "unapproved"
-        ]);
+        $response = json_decode($client->request("POST", $url . "/payments/" . $id, [
+            "multipart" => [
+                [
+                    "name" => "status",
+                    "contents" => "unapproved"
+                ]
+            ]
+        ])->getBody(), true)['status'];
 
-        return redirect("/admin/payment");
+        if ($response) {
+            return redirect("/admin/payment");
+        } else {
+            return redirect("/admin/payment");
+        }
     }
 }

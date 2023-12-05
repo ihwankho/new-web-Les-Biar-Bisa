@@ -171,7 +171,8 @@ class ScoreController extends Controller
                     "file" => url(public_path('/assets/assignment/' . $fileName)),
                     "nilai" => $nilai,
                     "catatan" => $catatan
-                ]
+                ],
+                "id_assignment" => $score->id_assignment
             ]);
         } catch (\Exception $e) {
             return response()->json([

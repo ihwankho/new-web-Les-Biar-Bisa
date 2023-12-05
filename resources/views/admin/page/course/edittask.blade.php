@@ -28,7 +28,7 @@
             </tr>
             <tr>
                 <td>
-                    <label class="space-x-2" for="nama">
+                    <label class="space-x-2" for="catatan">
                         <span class="font-semibold">Catatan</span>
                     </label>
                 </td>

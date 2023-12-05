@@ -537,66 +537,107 @@ class AdminCourseController extends Controller
 
     public function destroymateri(String $id)
     {
-        $materi = FileCourse::where('id', '=', $id)->first();
+        $client = new Client();
+        $url = env("API_URL");
 
-        unlink(public_path('/assets/course/materi/' . $materi->file));
+        $response = json_decode($client->request("DELETE", $url . '/filecourses/' . $id)->getBody(), true);
 
-        $materi->delete();
+        if ($response['status']) {
+            return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success delete materi');
+        }
 
-        return redirect('/admin/course/' . $materi->id_course)->with('success', 'Success delete materi');
+        return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success delete materi');
     }
 
     public function edittask(String $id)
     {
-        $task = Assignment::findOrFail($id);
+        $client = new Client();
+        $url = env("API_URL");
+        $task = json_decode($client->request("GET", $url . "/assignments/" . $id)->getBody(), true)['data'];
 
         return view('admin.page.course.edittask', compact('task'));
     }
 
     public function updatetask(Request $request, String $id)
     {
-        $task = Assignment::where('id', '=', $id)->first();
+        $client = new Client();
+        $url = env("API_URL");
 
-        $task->update($request->all());
+        $response = json_decode($client->request("POST", $url . "/assignments/" . $id, [
+            "multipart" => [
+                [
+                    "name" => "nama",
+                    "contents" => $request->nama
+                ],
+                [
+                    "name" => "catatan",
+                    "contents" => $request->catatan
+                ],
+                [
+                    "name" => "deadline",
+                    "contents" => $request->deadline
+                ],
+                [
+                    "name" => "metode_pengumpulan",
+                    "contents" => $request->metode_pengumpulan
+                ],
+            ]
+        ])->getBody(), true);
 
-        return redirect('/admin/course/' . $task->id_course)->with('success', 'Success edit file');
+        if ($response['status']) {
+            return redirect('/admin/course/' . $response['id_course'])->with('failed', 'Failed edit file');
+        }
+        return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success edit file');
     }
 
     public function destroytask(String $id)
     {
-        $task = Assignment::where('id', '=', $id)->first();
+        $client = new Client();
+        $url = env("API_URL");
 
+        $response = json_decode($client->request("DELETE", $url . "/assignments/" . $id)->getBody(), true);
 
-        $task->delete();
-
-        return redirect('/admin/course/' . $task->id_course)->with('success', 'Success delete materi');
+        if ($response['status']) {
+            return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success delete materi');
+        }
+        return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success delete materi');
     }
 
     public function assignment(String $id)
     {
-        $score = Score::where('id_assignment', '=', $id)->get();
+        $client = new Client();
+        $url = env("API_URL");
 
-        $assignment = Assignment::where('id', '=', $id)->first();
+        $scores = json_decode($client->request("GET", $url . '/scores')->getBody(), true)['data'];
+        $score = collect([]);
 
-        $course = Course::where('id', '=', $assignment->id_course)->first();
+        foreach ($scores as $scr) {
+            if ($scr['id_assignment'] == $id) {
+                $score->push($scr);
+            }
+        }
+
+        $assignment = json_decode($client->request("GET", $url . "/assignments/" . $id)->getBody(), true)['data'];
+
+        $courses = json_decode($client->request("GET", $url . "/courses/" . $assignment['id_course'])->getBody(), true)['data'];
 
         $data = collect([]);
         foreach ($score as $scr) {
-            $user = User::where('id', '=', 1)->first();
-            $dateString = $scr->created_at;
+            $user = json_decode($client->request("GET", $url . "/users/" . 1)->getBody(), true)['data'];
+            $dateString = $scr['created_at'];
             $dateTime = new DateTime($dateString);
             $formattedDate = $dateTime->format('d F Y H:i:s');
 
             $item = [
-                "id" => $scr->id,
-                "id_assignment" => $scr->id_assignment,
-                "nama" => $scr->nama,
+                "id" => $scr['id'],
+                "id_assignment" => $scr['id_assignment'],
+                "nama" => $scr['nama'],
                 "waktu_pengumpulan" => $formattedDate,
-                "user" => $user->fullname,
-                "file" => $scr->file,
-                "url" => $scr->url,
-                "nilai" => $scr->nilai,
-                "catatan" => $scr->catatan
+                "user" => $user['fullname'],
+                "file" => $scr['file'],
+                "url" => $scr['url'],
+                "nilai" => $scr['nilai'],
+                "catatan" => $scr['catatan']
             ];
 
             $data->push($item);
@@ -607,13 +648,25 @@ class AdminCourseController extends Controller
 
     public function nilai(Request $request, String $id)
     {
-        $score = Score::where('id', '=', $id)->first();
+        $client = new Client();
+        $url = env('API_URL');
 
-        $score->update([
-            "nilai" => $request->nilai,
-            "catatan" => $request->catatan
-        ]);
+        $response = json_decode($client->request("POST", $url . "/scores/" . $id, [
+            "multipart" => [
+                [
+                    "name" => "nilai",
+                    "contents" => $request->nilai
+                ],
+                [
+                    "name" => "catatan",
+                    "contents" => $request->catatan
+                ],
+            ]
+        ])->getBody(), true);
 
-        return redirect('/admin/course/task/' . $score->id_assignment)->with('success', 'Success add nilai and note');
+        if ($response['status']) {
+            return redirect('/admin/course/task/' . $response['id_assignment'])->with('failed', 'Failed add nilai and note');
+        }
+        return redirect('/admin/course/task/' . $response['id_assignment'])->with('success', 'Success add nilai and note');
     }
 }

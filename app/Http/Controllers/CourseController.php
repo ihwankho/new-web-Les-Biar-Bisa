@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\FileCourse;
 use App\Models\Score;
 use DateTime;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -16,11 +17,14 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::all();
+        $client = new Client();
+        $url = env("API_URL");
 
-        $file_courses = FileCourse::all()->count();
+        $courses = json_decode($client->request("GET", $url . "/courses")->getBody(), true)['data'];
 
-        $assignment = Assignment::all()->count();
+        $file_courses = count(json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data']);
+
+        $assignment = count(json_decode($client->request("GET", $url . "/assignments")->getBody(), true)['data']);
 
         return view('users.page.mycourse.index', ['courses' => $courses, 'file_courses' => $file_courses, 'assignments' => $assignment]);
     }
@@ -30,30 +34,39 @@ class CourseController extends Controller
      */
     public function task(String $id)
     {
-        $assignment = Assignment::where('id', '=', $id)->first();
+        $client = new Client();
+        $url = env("API_URL");
 
-        $course = Course::where('id', '=', $assignment->id_course)->first();
+        $assignment = json_decode($client->request("GET", $url . "/assignments/" . $id)->getBody(), true)['data'];
 
-        $scores = Score::where('id_user', '=', 1)->get();
+        $course = json_decode($client->request("GET", $url . "/courses/" . $assignment['id_course'])->getBody(), true)['data'];
+
+        $score = json_decode($client->request("GET", $url . "/scores")->getBody(), true)['data'];
+        $scores = collect([]);
+        foreach ($score as $scr) {
+            if ($scr['id_user'] == 1) {
+                $scores->push($scr);
+            }
+        }
 
         $foundScore = $scores->firstWhere('id_assignment', $assignment->id);
 
         $status = '';
         if ($foundScore) {
-            $status = $foundScore->status;
+            $status = $foundScore['status'];
         } else {
             $status = "belum selesai";
         }
 
-        $dateString = $assignment->deadline;
+        $dateString = $assignment['deadline'];
         $dateTime = new DateTime($dateString);
         $formattedDate = $dateTime->format('d F Y H:i:s');
 
         $data = [
-            "id" => $assignment->id,
-            "metode_pengumpulan" => $assignment->metode_pengumpulan,
-            "assignment_nama" => $assignment->nama,
-            "course_nama" => $course->nama,
+            "id" => $assignment['id'],
+            "metode_pengumpulan" => $assignment['metode_pengumpulan'],
+            "assignment_nama" => $assignment['nama'],
+            "course_nama" => $course['nama'],
             "deadline" => $formattedDate,
             "status" => $status
         ];
@@ -71,33 +84,41 @@ class CourseController extends Controller
 
     public function assignment(String $id)
     {
-        $assignment = Assignment::where('id', '=', $id)->first();
+        $client = new Client();
+        $url = env("API_URL");
+        $assignment = json_decode($client->request("GET", $url . "/assignments/" . $id)->getBody(), true)['data'];
 
-        $course = Course::where('id', '=', $assignment->id_course)->first();
+        $course = json_decode($client->request("GET", $url . "/courses/" . $assignment['id_course'])->getBody(), true)['data'];
 
-        $scores = Score::where('id_user', '=', 1)->get();
+        $score = json_decode($client->request("GET", $url . "/scores")->getBody(), true)['data'];
+        $scores = collect([]);
+        foreach ($score as $scr) {
+            if ($scr['id_user'] == 1) {
+                $scores->push($scr);
+            }
+        }
 
-        $foundScore = $scores->firstWhere('id_assignment', $assignment->id);
+        $foundScore = $scores->firstWhere('id_assignment', $assignment['id']);
 
         $status = '';
         if ($foundScore) {
-            $status = $foundScore->status;
+            $status = $foundScore['status'];
         } else {
             $status = "belum selesai";
         }
 
         $data = [
-            "id" => $assignment->id,
-            "id_score" => $foundScore->id,
-            "assignment_nama" => $assignment->nama,
-            "course_nama" => $course->nama,
-            "deadline" => $this->convertDate($assignment->deadline),
-            "waktu_pengajuan" => $this->convertDate($foundScore->created_at),
-            "nama" => $foundScore->nama,
-            "url" => $foundScore->url,
-            "file" => $foundScore->file,
-            "nilai" => $foundScore->nilai,
-            "catatan" => $foundScore->catatan,
+            "id" => $assignment['id'],
+            "id_score" => $foundScore['id'],
+            "assignment_nama" => $assignment['nama'],
+            "course_nama" => $course['nama'],
+            "deadline" => $this->convertDate($assignment['deadline']),
+            "waktu_pengajuan" => $this->convertDate($foundScore['created_at']),
+            "nama" => $foundScore['nama'],
+            "url" => $foundScore['url'],
+            "file" => $foundScore['file'],
+            "nilai" => $foundScore['nilai'],
+            "catatan" => $foundScore['catatan'],
             "status" => $status
         ];
 
@@ -109,13 +130,15 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
+        $client = new Client();
+        $url = env("API_URL");
         $id_assignment = $request->query('id_assignment');
 
-        $task = Assignment::where('id', '=', $id_assignment)->first();
+        $task = json_decode($client->request("GET", $url . "/assignments/" . $id_assignment)->getBody(), true)['data'];
 
         $status = "";
         $date = time();
-        $taskTime = strtotime($task->deadline);
+        $taskTime = strtotime($task['deadline']);
 
         if ($date < $taskTime) {
             $status = "selesai";
@@ -123,35 +146,85 @@ class CourseController extends Controller
             $status = "terlambat";
         }
 
-        $fileName = null;
-
-        if ($request->file('file')) {
-            $file = $request->file('file');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('assets/assignment'), $fileName);
+        if ($request->hasFile('file')) {
+            $response = json_decode($client->request("POST", $url . "/scores", [
+                "multipart" => [
+                    [
+                        "name" => "id_user",
+                        "contents" => 1
+                    ],
+                    [
+                        "name" => "id_assignment",
+                        "contents" => $id_assignment
+                    ],
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "url",
+                        "contents" => $request->url
+                    ],
+                    [
+                        "name" => "status",
+                        "contents" => $status
+                    ],
+                    [
+                        "name" => "file",
+                        "contents" => fopen($request->file('file'), 'r'),
+                        "filename" => $request->file('file')->getClientOriginalName(),
+                        "headers" => [
+                            "Content-Type" => "<Content-type header>"
+                        ]
+                    ]
+                ]
+            ])->getBody(), true)['status'];
+        } else {
+            $response = json_decode($client->request("POST", $url . "/scores", [
+                "multipart" => [
+                    [
+                        "name" => "id_user",
+                        "contents" => 1
+                    ],
+                    [
+                        "name" => "id_assignment",
+                        "contents" => $id_assignment
+                    ],
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "url",
+                        "contents" => $request->url
+                    ],
+                    [
+                        "name" => "status",
+                        "contents" => $status
+                    ],
+                ]
+            ])->getBody(), true)['status'];
         }
 
-        Score::create([
-            "id_user" => 1,
-            "id_assignment" => $id_assignment,
-            "nama" => $request->nama,
-            "url" => $request->url,
-            "file" => $fileName,
-            "status" => $status
-        ]);
-
-        return redirect('/mycourse/assignment/' . $id_assignment);
+        if ($response) {
+            return redirect('/mycourse/assignment/' . $id_assignment);
+        } else {
+            return redirect('/mycourse/assignment/' . $id_assignment);
+        }
     }
 
     public function storeass(Request $request)
     {
+        $client = new Client();
+        $url = env("API_URL");
+
         $id_assignment = $request->query('id_assignment');
 
-        $task = Assignment::where('id', '=', $id_assignment)->first();
+        $task = json_decode($client->request("GET", $url . "/assignments/" . $id_assignment)->getBody(), true)['data'];
 
         $status = "";
         $date = time();
-        $taskTime = strtotime($task->deadline);
+        $taskTime = strtotime($task['deadline']);
 
         if ($date < $taskTime) {
             $status = "selesai";
@@ -159,24 +232,71 @@ class CourseController extends Controller
             $status = "terlambat";
         }
 
-        $fileName = null;
-
-        if ($request->file('file')) {
-            $file = $request->file('file');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('assets/assignment'), $fileName);
+        if ($request->hasFile('file')) {
+            $response = json_decode($client->request("POST", $url . "/scores", [
+                "multipart" => [
+                    [
+                        "name" => "id_user",
+                        "contents" => 1
+                    ],
+                    [
+                        "name" => "id_assignment",
+                        "contents" => $id_assignment
+                    ],
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "url",
+                        "contents" => $request->url
+                    ],
+                    [
+                        "name" => "status",
+                        "contents" => $status
+                    ],
+                    [
+                        "name" => "file",
+                        "contents" => fopen($request->file('file'), 'r'),
+                        "filename" => $request->file('file')->getClientOriginalName(),
+                        "headers" => [
+                            "Content-Type" => "<Content-type header>"
+                        ]
+                    ]
+                ]
+            ])->getBody(), true)['status'];
+        } else {
+            $response = json_decode($client->request("POST", $url . "/scores", [
+                "multipart" => [
+                    [
+                        "name" => "id_user",
+                        "contents" => 1
+                    ],
+                    [
+                        "name" => "id_assignment",
+                        "contents" => $id_assignment
+                    ],
+                    [
+                        "name" => "nama",
+                        "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "url",
+                        "contents" => $request->url
+                    ],
+                    [
+                        "name" => "status",
+                        "contents" => $status
+                    ],
+                ]
+            ])->getBody(), true)['status'];
         }
 
-        Score::create([
-            "id_user" => 1,
-            "id_assignment" => $id_assignment,
-            "nama" => $request->nama,
-            "url" => $request->url,
-            "file" => $fileName,
-            "status" => $status
-        ]);
-
-        return redirect('/assignment');
+        if ($response) {
+            return redirect('/assignment');
+        } else {
+            return redirect('/assignment');
+        }
     }
 
     /**
@@ -184,32 +304,53 @@ class CourseController extends Controller
      */
     public function show(String $id)
     {
-        $course = Course::where('id', '=', $id)->first();
+        $client = new Client();
+        $url = env("API_URL");
 
-        $file_course = FileCourse::where('id_course', '=', $id)->get();
+        $course = json_decode($client->request("GET", $url . "/courses/" . $id)->getBody(), true)['data'];
 
-        $assignment = Assignment::where('id_course', '=', $id)->get();
+        $file_courses = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+        $file_course = collect([]);
+        foreach ($file_courses as $file) {
+            if ($file['id_course'] == $id) {
+                $file_course->push($file);
+            }
+        }
 
-        $scores = Score::where('id_user', '=', 1)->get();
+        $assignments = json_decode($client->request("GET", $url . "/assignments")->getBody(), true)['data'];
+        $assignment = collect([]);
+        foreach ($assignments as $ass) {
+            if ($ass['id_course'] == $id) {
+                $assignment->push($ass);
+            }
+        }
+
+        $score = json_decode($client->request("GET", $url . "/scores")->getBody(), true)['data'];
+        $scores = collect([]);
+        foreach ($score as $sc) {
+            if ($sc['id_user'] == 1) {
+                $scores->push($sc);
+            }
+        }
 
         $data = collect([]);
 
 
         foreach ($assignment as $task) {
-            $dateString = $task->deadline;
+            $dateString = $task['deadline'];
             $dateTime = new DateTime($dateString);
             $formattedDate = $dateTime->format('d F Y H:i:s');
 
             $taskData = [
-                "id" => $task->id,
-                "nama" => $task->nama,
+                "id" => $task['id'],
+                "nama" => $task['nama'],
                 "deadline" => $formattedDate,
             ];
 
-            $foundScore = $scores->firstWhere('id_assignment', $task->id);
+            $foundScore = $scores->firstWhere('id_assignment', $task['id']);
 
             if ($foundScore) {
-                $taskData["status"] = $foundScore->status;
+                $taskData["status"] = $foundScore['status'];
             } else {
                 $taskData["status"] = "belum selesai";
             }
@@ -225,53 +366,46 @@ class CourseController extends Controller
      */
     public function edit(String $id)
     {
-        $assignment = Assignment::where('id', '=', $id)->first();
+        $client = new Client();
+        $url = env("API_URL");
 
-        $course = Course::where('id', '=', $assignment->id_course)->first();
+        $assignment = json_decode($client->request("GET", $url . "/assignments/" . $id)->getBody(), true)['data'];
 
-        $scores = Score::where('id_user', '=', 1)->get();
+        $course = json_decode($client->request("GET", $url . "/courses/" . $assignment['id_course'])->getBody(), true)['data'];
 
-        $foundScore = $scores->firstWhere('id_assignment', $assignment->id);
+        $score = json_decode($client->request("GET", $url . "/scores")->getBody(), true)['data'];
+        $scores = collect([]);
+        foreach ($score as $scr) {
+            if ($scr['id_user'] == 1) {
+                $scores->push($scr);
+            }
+        }
+
+        $foundScore = $scores->firstWhere('id_assignment', $assignment['id']);
 
         $status = '';
         if ($foundScore) {
-            $status = $foundScore->status;
+            $status = $foundScore['status'];
         } else {
             $status = "belum selesai";
         }
 
-        $dateString = $assignment->deadline;
+        $dateString = $assignment['deadline'];
         $dateTime = new DateTime($dateString);
         $formattedDate = $dateTime->format('d F Y H:i:s');
 
         $data = [
-            "id" => $assignment->id,
-            "metode_pengumpulan" => $assignment->metode_pengumpulan,
-            "assignment_nama" => $assignment->nama,
-            "nama" => $foundScore->nama,
-            "url" => $foundScore->url,
-            "file" => $foundScore->file,
-            "course_nama" => $course->nama,
+            "id" => $assignment['id'],
+            "metode_pengumpulan" => $assignment['metode_pengumpulan'],
+            "assignment_nama" => $assignment['nama'],
+            "nama" => $foundScore['nama'],
+            "url" => $foundScore['url'],
+            "file" => $foundScore['file'],
+            "course_nama" => $course['nama'],
             "deadline" => $formattedDate,
             "status" => $status
         ];
 
         return view('users.page.assignment.edit', compact('data'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Course $course)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Course $course)
-    {
-        //
     }
 }

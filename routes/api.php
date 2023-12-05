@@ -50,7 +50,7 @@ Route::delete('/courses/{id}', [CourseController::class, 'destroy']);
 Route::get('/assignments', [AssignmentController::class, 'index']);
 Route::get('/assignments/{id}', [AssignmentController::class, 'show']);
 Route::post('/assignments', [AssignmentController::class, 'store']);
-Route::patch('/assignments/{id}', [AssignmentController::class, 'update']);
+Route::post('/assignments/{id}', [AssignmentController::class, 'update']);
 Route::delete('/assignments/{id}', [AssignmentController::class, 'destroy']);
 
 // File Course
@@ -64,12 +64,12 @@ Route::delete("/filecourses/{id}", [FileCourseController::class, 'destroy']);
 Route::get('/scores', [ScoreController::class, 'index']);
 Route::get('/scores/{id}', [ScoreController::class, 'show']);
 Route::post('/scores', [ScoreController::class, 'store']);
-Route::patch('/scores/{id}', [ScoreController::class, 'update']);
+Route::post('/scores/{id}', [ScoreController::class, 'update']);
 Route::delete('/scores/{id}', [ScoreController::class, 'destroy']);
 
 // Payment
 Route::get('/payments', [PaymentController::class, 'index']);
 Route::get('/payments/{id}', [PaymentController::class, 'show']);
 Route::post('/payments', [PaymentController::class, 'store']);
-Route::patch('/payments/{id}', [PaymentController::class, 'update']);
+Route::post('/payments/{id}', [PaymentController::class, 'update']);
 Route::delete('/payments/{id}', [PaymentController::class, 'destroy']);

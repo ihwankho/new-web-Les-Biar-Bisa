@@ -141,7 +141,8 @@ class FileCourseController extends Controller
 
             return response()->json([
                 "status" => true,
-                "message" => "DELETE data file course by id successfully"
+                "message" => "DELETE data file course by id successfully",
+                "id_course" => $fileCourse->id_course
             ]);
         } catch (\Exception $e) {
             return response()->json([
