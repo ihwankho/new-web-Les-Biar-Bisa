@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class LoginUser
@@ -18,10 +17,12 @@ class LoginUser
     {
         $token = $request->session()->get('token');
         $id = $request->session()->get('id_user');
+        $role = $request->session()->get('role');
         $fullname = $request->session()->get('fullname');
 
-
-        if ($token && $id && $fullname) {
+        if ($token && $id && $fullname && $role == "admin") {
+            return $next($request);
+        } else if ($token && $id && $fullname && $role == "user") {
             return $next($request);
         }
 

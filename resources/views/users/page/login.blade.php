@@ -29,7 +29,7 @@
                     type="password" name="password" id="password">
             </label>
 
-            <button class="w-full bg-primary p-2 text-center font-semibold text-white my-3 rounded-md"
+            <button class="w-full bg-primary p-2 text-center font-semibold text-white mt-3 mb-2 rounded-md"
                 type="submit">Login Now</button>
         </form>
     </div>

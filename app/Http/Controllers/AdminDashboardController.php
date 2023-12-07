@@ -12,11 +12,19 @@ class AdminDashboardController extends Controller
         $client = new Client();
         $url = env("API_URL");
 
-        $users = json_decode($client->request("GET", $url . '/users', [
+        $user = json_decode($client->request("GET", $url . '/users', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $request->session()->get('token'),
             ],
         ])->getBody(), true)['data'];
+
+        $users = collect([]);
+        foreach ($user as $usr) {
+            if ($usr['role'] == "user") {
+                $users->push($usr);
+            }
+        }
+
         $scores = json_decode($client->request("GET", $url . '/scores', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $request->session()->get('token'),

@@ -43,7 +43,7 @@ class AuthenticationController extends Controller
                 'status' => true,
                 'message' => 'User Logged In Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken,
-                "user" => $user
+                "data" => $user
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -60,7 +60,7 @@ class AuthenticationController extends Controller
                 "username" => "required|unique:Users",
                 "fullname" => "required",
                 "password" => "required",
-                "id_tingkatan" => "required|numeric"
+                "role" => "required|in:user,admin",
             ]);
 
             if ($validator->fails()) {
@@ -130,12 +130,17 @@ class AuthenticationController extends Controller
 
         if ($response['status']) {
             session([
-                'id_user' => $response['user']['id'],
-                'fullname' => $response['user']['fullname'],
+                'id_user' => $response['data']['id'],
+                'fullname' => $response['data']['fullname'],
+                'role' => $response['data']['role'],
                 'token' => $response['token'],
             ]);
 
-            return redirect('/dashboard');
+            if ($response['data']['role'] == "admin") {
+                return redirect('/admin/dashboard');
+            } else {
+                return redirect('/dashboard');
+            }
         }
     }
 

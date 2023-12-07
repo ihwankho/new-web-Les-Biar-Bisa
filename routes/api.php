@@ -34,6 +34,13 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post('users/{id}', [StudentController::class, 'update']);
     Route::delete('users/{id}', [StudentController::class, 'destroy']);
 
+    // Admin
+    Route::get('/admin', [StudentController::class, 'index']);
+    Route::get('/admin/{id}', [StudentController::class, 'show']);
+    Route::post('/admin', [StudentController::class, 'store']);
+    Route::post('admin/{id}', [StudentController::class, 'update']);
+    Route::delete('admin/{id}', [StudentController::class, 'destroy']);
+
     // Tingkatan
     Route::get('/tingkatan', [TingkatanController::class, 'index']);
     Route::get('/tingkatan/{id}', [TingkatanController::class, 'show']);

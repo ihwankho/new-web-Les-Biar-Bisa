@@ -7,13 +7,24 @@ use Illuminate\Http\Request;
 
 class AdminAccountController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
 
         $i = 1;
-        $data = json_decode($client->request("GET", $url . '/users')->getBody(), true)['data'];
+        $users = json_decode($client->request("GET", $url . '/users', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
+
+        $data = collect([]);
+        foreach ($users as $item) {
+            if ($item['role'] == 'user') {
+                $data->push($item);
+            }
+        }
 
         return view('admin.page.account.index', compact('data', 'i'));
     }
@@ -21,12 +32,16 @@ class AdminAccountController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $tingkatan = json_decode($client->request("GET", $url . '/tingkatan')->getBody(), true)['data'];
+        $tingkatan = json_decode($client->request("GET", $url . '/tingkatan', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         return view('admin.page.account.create', compact('tingkatan'));
     }
@@ -48,6 +63,10 @@ class AdminAccountController extends Controller
                 [
                     "name" => "fullname",
                     "contents" => $request->fullname
+                ],
+                [
+                    "name" => "role",
+                    "contents" => "user"
                 ],
                 [
                     "name" => "password",
