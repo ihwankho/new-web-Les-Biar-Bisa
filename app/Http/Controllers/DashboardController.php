@@ -3,21 +3,54 @@
 namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $course = count(json_decode($client->request("GET", $url . "/courses")->getBody(), true)['data']);
+        $user = json_decode($client->request("GET", $url . "/users/" . $request->session()->get('id_user'), [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token')
+            ]
+        ])->getBody(), true)['data'];
+        $course = 0;
+        $courses = json_decode($client->request("GET", $url . "/courses", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token')
+            ]
+        ])->getBody(), true)['data'];
 
-        $assignment = json_decode($client->request("GET", $url . "/assignments")->getBody(), true)['data'];
-        $score = json_decode($client->request("GET", $url . "/scores")->getBody(), true)['data'];
+        foreach ($courses as $item) {
+            if ($item['id_tingkatan'] == $user['id_tingkatan']) {
+                $course++;
+            }
+        }
+
+        $assignment = json_decode($client->request("GET", $url . "/assignments", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ], [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
+        $score = json_decode($client->request("GET", $url . "/scores", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ], [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
         $notdone = 0;
         $misseddeadline = 0;
 
@@ -40,17 +73,21 @@ class DashboardController extends Controller
             }
         }
 
-        $score = json_decode($client->request("GET", $url . "/scores")->getBody(), true)['data'];
+        $score = json_decode($client->request("GET", $url . "/scores", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
         $doneCount = 0;
         foreach ($score as $scr) {
-            if ($scr['id_user'] == 1 && $scr['status'] == 'selesai') {
+            if ($scr['id_user'] ==  $request->session()->get('id_user') && $scr['status'] == 'selesai') {
                 $doneCount++;
             }
         }
 
         $lateCount = 0;
         foreach ($score as $scr) {
-            if ($scr['id_user'] == 1 && $scr['status'] == 'terlambat') {
+            if ($scr['id_user'] ==  $request->session()->get('id_user') && $scr['status'] == 'terlambat') {
                 $lateCount++;
             }
         }
@@ -62,16 +99,24 @@ class DashboardController extends Controller
             "misseddeadline" => $misseddeadline
         ];
 
-        $users = json_decode($client->request("GET", $url . "/users")->getBody(), true)['data'];
+        $users = json_decode($client->request("GET", $url . "/users", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
         $username = "";
         foreach ($users as $usr) {
-            if ($usr['username'] == "filfia") {
+            if ($usr['id'] == $request->session()->get('id_user')) {
                 $username = $usr;
                 break;
             }
         }
 
-        $schedule = json_decode($client->request("GET", $url . "/tingkatan/" . $username['id_tingkatan'])->getBody(), true)['data'];
+        $schedule = json_decode($client->request("GET", $url . "/tingkatan/" . $username['id_tingkatan'], [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         return view('users.page.dashboard.index', compact('schedule', 'assignment', 'course'));
     }

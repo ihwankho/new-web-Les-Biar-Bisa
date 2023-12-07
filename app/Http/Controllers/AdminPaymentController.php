@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
 use DateTime;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -12,12 +11,16 @@ class AdminPaymentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $data = json_decode($client->request("GET", $url . '/payments')->getBody(), true)['data'];
+        $data = json_decode($client->request("GET", $url . '/payments', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         $i = 1;
 
@@ -33,12 +36,16 @@ class AdminPaymentController extends Controller
         return view('admin.page.payment.index', compact('data', 'i', 'dateTime'));
     }
 
-    public function come()
+    public function come(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $datas = json_decode($client->request("GET", $url . "/payments")->getBody(), true)['data'];
+        $datas = json_decode($client->request("GET", $url . "/payments", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
         $data = collect([]);
 
         foreach ($datas as $dt) {
@@ -61,12 +68,16 @@ class AdminPaymentController extends Controller
         return view('admin.page.payment.come', compact('data', 'i', 'dateTime'));
     }
 
-    public function approved()
+    public function approved(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $datas = json_decode($client->request("GET", $url . "/payments")->getBody(), true)['data'];
+        $datas = json_decode($client->request("GET", $url . "/payments", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
         $data = collect([]);
 
         foreach ($datas as $dt) {
@@ -89,12 +100,16 @@ class AdminPaymentController extends Controller
         return view('admin.page.payment.approved', compact('data', 'i', 'dateTime'));
     }
 
-    public function unapproved()
+    public function unapproved(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $datas = json_decode($client->request("GET", $url . "/payments")->getBody(), true)['data'];
+        $datas = json_decode($client->request("GET", $url . "/payments", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
         $data = collect([]);
 
         foreach ($datas as $dt) {
@@ -120,7 +135,7 @@ class AdminPaymentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, string $id)
     {
         $client = new Client();
         $url = env("API_URL");
@@ -131,7 +146,10 @@ class AdminPaymentController extends Controller
                     "name" => "status",
                     "contents" => "approved"
                 ]
-            ]
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
         ])->getBody(), true)['status'];
 
         if ($response) {
@@ -144,7 +162,7 @@ class AdminPaymentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $client = new Client();
         $url = env("API_URL");
@@ -155,7 +173,10 @@ class AdminPaymentController extends Controller
                     "name" => "status",
                     "contents" => "unapproved"
                 ]
-            ]
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
         ])->getBody(), true)['status'];
 
         if ($response) {

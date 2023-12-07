@@ -4,25 +4,61 @@ namespace App\Http\Controllers;
 
 use DateTime;
 use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 
 class AssignmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $courses = json_decode($client->request("GET", $url . '/courses')->getBody(), true)['data'];
+        $user = json_decode($client->request("GET", $url . "/users/" . $request->session()->get('id_user'), [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
-        $file_course = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+        $course = json_decode($client->request("GET", $url . '/courses', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
-        $score = json_decode($client->request("GET", $url . "/scores")->getBody(), true)['data'];
+        $courses = collect([]);
+        foreach ($course as $crs) {
+            if ($crs['id_tingkatan'] == $user['id_tingkatan']) {
+                $courses->push($crs);
+            }
+        }
+
+        $file = json_decode($client->request("GET", $url . "/filecourses", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
+
+        $file_course = collect([]);
+        foreach ($file as $item) {
+            foreach ($courses as $crs) {
+                if ($crs['id'] == $item['id_course']) {
+                    $file_course->push($item);
+                    break;
+                }
+            }
+        }
+
+        $score = json_decode($client->request("GET", $url . "/scores", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
         $scores = collect([]);
         foreach ($score as $scr) {
-            if ($scr['id_user'] == 1) {
+            if ($scr['id_user'] == $request->session()->get('id_user')) {
                 $scores->push($scr);
             }
         }
@@ -31,7 +67,12 @@ class AssignmentController extends Controller
 
         foreach ($courses as $course) {
             $temporary = collect([]);
-            $assignments = json_decode($client->request("GET", $url . '/assignments')->getBody(), true)['data'];
+            $assignments = json_decode($client->request("GET", $url . '/assignments', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
+
             $assignment = collect([]);
             foreach ($assignments as $ass) {
                 if ($ass['id_course'] == $course['id']) {

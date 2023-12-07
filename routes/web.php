@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminPaymentController;
 use App\Http\Controllers\AdminScheduleController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentController;
@@ -28,22 +29,28 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('/dashboard', DashboardController::class);
-Route::resource('/mycourse', CourseController::class);
-Route::get('/mycourse/task/{id}', [CourseController::class, 'task'])->name('mycourse.task');
-Route::get('/mycourse/assignment/{id}', [CourseController::class, 'assignment'])->name('mycourse.assignment');
-Route::resource('/assignment', AssignmentController::class);
-Route::get('/assignment/task/{id}', [CourseController::class, 'task'])->name('assignment.task');
-Route::post('/assignment', [CourseController::class, 'storeass']);
-Route::get('/assignment/assignment/{id}', [CourseController::class, 'assignment'])->name('assignment.assignment');
-Route::get('/assignment/edit/{id}', [CourseController::class, 'edit']);
-Route::delete('/assignment/delete/{id}', [ScoreController::class, 'destroy']);
-Route::resource('/schedule', ScheduleController::class);
-Route::resource('/payment', PaymentController::class);
-Route::post('/payment', [PaymentController::class, 'store']);
-Route::get('/payment/edit/{id}', [PaymentController::class, 'edit']);
-Route::put('/payment/update/{id}', [PaymentController::class, 'update']);
-Route::delete('/payment/delete/{id}', [PaymentController::class, 'destroy']);
+Route::get("/login", [AuthenticationController::class, 'login_user']);
+Route::post("/login", [AuthenticationController::class, 'user_login']);
+
+Route::middleware('LoginUser')->group(function () {
+    Route::get("/logout", [AuthenticationController::class, 'user_logout']);
+    Route::resource('/dashboard', DashboardController::class);
+    Route::resource('/mycourse', CourseController::class);
+    Route::get('/mycourse/task/{id}', [CourseController::class, 'task'])->name('mycourse.task');
+    Route::get('/mycourse/assignment/{id}', [CourseController::class, 'assignment'])->name('mycourse.assignment');
+    Route::resource('/assignment', AssignmentController::class);
+    Route::get('/assignment/task/{id}', [CourseController::class, 'task'])->name('assignment.task');
+    Route::post('/assignment', [CourseController::class, 'storeass']);
+    Route::get('/assignment/assignment/{id}', [CourseController::class, 'assignment'])->name('assignment.assignment');
+    Route::get('/assignment/edit/{id}', [CourseController::class, 'edit']);
+    Route::delete('/assignment/delete/{id}', [ScoreController::class, 'destroy']);
+    Route::resource('/schedule', ScheduleController::class);
+    Route::resource('/payment', PaymentController::class);
+    Route::post('/payment', [PaymentController::class, 'store']);
+    Route::get('/payment/edit/{id}', [PaymentController::class, 'edit']);
+    Route::put('/payment/update/{id}', [PaymentController::class, 'update']);
+    Route::delete('/payment/delete/{id}', [PaymentController::class, 'destroy']);
+});
 
 // Admin Dashboard
 Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']);

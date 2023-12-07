@@ -2,37 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tingkatan;
-use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $client = new Client();
         $url = env('API_URL');
 
-        $users = json_decode($client->request("GET", $url . '/users')->getBody(), true)['data'];
+        $users = json_decode($client->request("GET", $url . '/users', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         $username = null;
         foreach ($users as $user) {
-            if ($user['username'] == 'filfia') {
+            if ($user['id'] == $request->session()->get('id_user')) {
                 $username = $user;
             }
         }
 
-        $schedule = json_decode($client->request("GET", $url . "/tingkatan/" . $username['id_tingkatan'])->getBody(), true)['data'];
+        $schedule = json_decode($client->request("GET", $url . "/tingkatan/" . $username['id_tingkatan'], [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         return view('users.page.schedule.index', compact('schedule'));
     }
 
-    public function admin()
+    public function admin(Request $request)
     {
         $client = new Client();
         $url = env('API_URL');
-        $schedule = json_decode($client->request("GET", $url . '/tingkatan')->getBody(), true)['data'];
+        $schedule = json_decode($client->request("GET", $url . '/tingkatan', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         $data = collect([]);
 
@@ -65,7 +75,7 @@ class ScheduleController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         return view('admin.page.schedule.create');
     }
@@ -91,7 +101,10 @@ class ScheduleController extends Controller
                         "Content-Type" => "<Content-type header>"
                     ]
                 ]
-            ]
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
         ])->getBody(), true);
 
         if (!$response['status']) {
@@ -104,12 +117,16 @@ class ScheduleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, string $id)
     {
         $client = new Client();
         $url = env('API_URL');
 
-        $schedule = json_decode($client->request("GET",  $url . '/tingkatan/' . $id)->getBody(), true)['data'];
+        $schedule = json_decode($client->request("GET",  $url . '/tingkatan/' . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         return view('admin.page.schedule.edit', compact('schedule'));
     }
@@ -130,6 +147,10 @@ class ScheduleController extends Controller
                         "contents" => $request->nama,
                     ]
                 ]
+            ], [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
             ])->getBody(), true)['status'];
         } else if ($request->nama && $request->hasFile('jadwal')) {
             $response = json_decode($client->request("POST", $url . "/tingkatan/" . $id, [
@@ -146,6 +167,10 @@ class ScheduleController extends Controller
                         ]
                     ]
                 ]
+            ], [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
             ])->getBody(), true)['status'];
         }
 
@@ -159,12 +184,16 @@ class ScheduleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $response = json_decode($client->request("DELETE", $url . "/tingkatan/" . $id)->getBody(), true)['status'];
+        $response = json_decode($client->request("DELETE", $url . "/tingkatan/" . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['status'];
 
         if (!$response) {
             return redirect('/admin/schedule')->with('failed', "Failed delete schedule");

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
@@ -12,12 +11,23 @@ class PaymentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
-        $data = json_decode($client->request("GET", $url . "/payments")->getBody(), true)['data'];
-        $i = 1;
+        $datas = json_decode($client->request("GET", $url . "/payments", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
+        $i =  1;
+
+        $data = collect([]);
+        foreach ($datas as $item) {
+            if ($item['id_user'] == $request->session()->get('id_user')) {
+                $data->push($item);
+            }
+        }
 
         return view('users.page.payment.index', compact('data', 'i'));
     }
@@ -43,7 +53,7 @@ class PaymentController extends Controller
                 "multipart" => [
                     [
                         "name" => "id_user",
-                        "contents" => 1
+                        "contents" =>  $request->session()->get('id_user')
                     ],
                     [
                         "name" => "nama",
@@ -61,6 +71,9 @@ class PaymentController extends Controller
                             "Content-Type" => "<Content-type header>"
                         ]
                     ]
+                ],
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
                 ]
             ])->getBody(), true)['status'];
         } else {
@@ -68,7 +81,7 @@ class PaymentController extends Controller
                 "multipart" => [
                     [
                         "name" => "id_user",
-                        "contents" => 1
+                        "contents" =>  $request->session()->get('id_user')
                     ],
                     [
                         "name" => "nama",
@@ -78,7 +91,10 @@ class PaymentController extends Controller
                         "name" => "note",
                         "contents" => $request->catatan
                     ],
-                ]
+                ],
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
             ])->getBody(), true)['status'];
         }
 
@@ -92,12 +108,16 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(String $id)
+    public function show(Request $request, String $id)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $payment = json_decode($client->request("GET", $url . "/payments/" . $id)->getBody(), true)['data'];
+        $payment = json_decode($client->request("GET", $url . "/payments/" . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         return view('users.page.payment.show', compact('payment'));
     }
@@ -105,12 +125,16 @@ class PaymentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(String $id)
+    public function edit(Request $request, String $id)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $data = json_decode($client->request("GET", $url . "/payments/" . $id)->getBody(), true)['data'];
+        $data = json_decode($client->request("GET", $url . "/payments/" . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         return view('users.page.payment.edit', compact('data'));
     }
@@ -142,7 +166,10 @@ class PaymentController extends Controller
                             "Content-Type" => "<Content-type header>"
                         ]
                     ]
-                ]
+                ],
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
             ])->getBody(), true)['status'];
         } else {
             $response = json_decode($client->request("POST", $url . "/payments/" . $id, [
@@ -155,7 +182,10 @@ class PaymentController extends Controller
                         "name" => "note",
                         "contents" => $request->catatan
                     ],
-                ]
+                ],
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
             ])->getBody(), true)['status'];
         }
 
@@ -169,12 +199,16 @@ class PaymentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(String $id)
+    public function destroy(Request $request, String $id)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $response = json_decode($client->request("DELETE", $url . "/payments/" . $id)->getBody(), true)['status'];
+        $response = json_decode($client->request("DELETE", $url . "/payments/" . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['status'];
 
         if (!$response) {
             return redirect('/payment')->with('failed', 'Failed delete book data!');

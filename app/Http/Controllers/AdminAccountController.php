@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tingkatan;
-use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
@@ -59,17 +57,30 @@ class AdminAccountController extends Controller
                     "name" => "id_tingkatan",
                     "contents" => $request->tingkatan
                 ],
-            ]
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
         ]);
 
         return redirect('/admin/account')->with('success', 'Success create account');
     }
 
-    public function edit(string $id)
+    public function edit(Request $request, String $id)
     {
-        $users = User::findOrFail($id);
+        $client = new Client();
+        $url = env("API_URL");
+        $users = json_decode($client->request("GET", $url . "/users/" . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
-        $tingkatan = Tingkatan::all();
+        $tingkatan = json_decode($client->request("GET", $url . '/tingkatan', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         return view('admin.page.account.edit', compact('users', 'tingkatan'));
     }
@@ -100,7 +111,10 @@ class AdminAccountController extends Controller
                     "name" => "tingkatan",
                     "contents" => $request->tingkatan
                 ],
-            ]
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
         ])->getBody())->status;
 
         if (!$response) {
@@ -113,12 +127,16 @@ class AdminAccountController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $client = new Client();
         $url = env('API_URL');
 
-        $response = json_decode($client->request('DELETE', $url . '/users/' . $id)->getBody(), true)['status'];
+        $response = json_decode($client->request('DELETE', $url . '/users/' . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['status'];
 
         if (!$response) {
             return redirect('/admin/account')->with('failed', 'Failed delete account');

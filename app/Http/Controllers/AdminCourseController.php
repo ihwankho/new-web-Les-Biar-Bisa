@@ -2,31 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assignment;
-use App\Models\Course;
-use App\Models\FileCourse;
-use App\Models\Score;
-use App\Models\Tingkatan;
-use App\Models\User;
 use DateTime;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use PhpParser\Node\Expr\Cast\String_;
 
 class AdminCourseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $client = new Client();
         $url = env('API_URL');
 
-        $course = json_decode($client->request("GET", $url . "/courses")->getBody(), true)['data'];
-        $fileCourses = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
-        $assignment = json_decode($client->request("GET", $url . "/assignments")->getBody(), true)['data'];
-        $tingkatan = json_decode($client->request("GET", $url . "/tingkatan")->getBody(), true)['data'];
+        $course = json_decode($client->request("GET", $url . "/courses", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
+        $fileCourses = json_decode($client->request("GET", $url . "/filecourses", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
+        $assignment = json_decode($client->request("GET", $url . "/assignments", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
+        $tingkatan = json_decode($client->request("GET", $url . "/tingkatan", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
         $data = collect([]);
 
         foreach ($course as $crs) {
@@ -69,11 +78,15 @@ class AdminCourseController extends Controller
         return view('admin.page.course.index', compact('data'));
     }
 
-    public function sd()
+    public function sd(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
-        $courses = json_decode($client->request("GET", $url . "/courses")->getBody(), true)['data'];
+        $courses = json_decode($client->request("GET", $url . "/courses", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         $course = collect([]);
         foreach ($courses as $cours) {
@@ -86,7 +99,11 @@ class AdminCourseController extends Controller
         $data = collect([]);
 
         foreach ($course as $crs) {
-            $materi = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+            $materi = json_decode($client->request("GET", $url . "/filecourses", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
             $countMateri = 0;
             foreach ($materi as $mtr) {
                 if ($mtr['id_course'] == $crs['id']) {
@@ -94,7 +111,11 @@ class AdminCourseController extends Controller
                 }
             }
 
-            $assignments = json_decode($client->request("GET", $url . "/assignments")->getBody(), true)['data'];
+            $assignments = json_decode($client->request("GET", $url . "/assignments", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
             $countAssignment = 0;
             foreach ($assignments as $ass) {
                 if ($ass['id_course'] == $crs['id']) {
@@ -103,7 +124,11 @@ class AdminCourseController extends Controller
             }
 
             $tingkatan =
-                json_decode($client->request("GET", $url . "/tingkatan/" . $crs['id_tingkatan'])->getBody(), true)['data'];
+                json_decode($client->request("GET", $url . "/tingkatan/" . $crs['id_tingkatan'], [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                    ],
+                ])->getBody(), true)['data'];
 
             $item = [
                 "id" => $crs['id'],
@@ -120,11 +145,15 @@ class AdminCourseController extends Controller
         return view('admin.page.course.sd', compact('data'));
     }
 
-    public function smp()
+    public function smp(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
-        $courses = json_decode($client->request("GET", $url . "/courses")->getBody(), true)['data'];
+        $courses = json_decode($client->request("GET", $url . "/courses", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         $course = collect([]);
         foreach ($courses as $cours) {
@@ -136,7 +165,11 @@ class AdminCourseController extends Controller
         $data = collect([]);
 
         foreach ($course as $crs) {
-            $materi = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+            $materi = json_decode($client->request("GET", $url . "/filecourses", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
             $countMateri = 0;
             foreach ($materi as $mtr) {
                 if ($mtr['id_course'] == $crs['id']) {
@@ -144,7 +177,11 @@ class AdminCourseController extends Controller
                 }
             }
 
-            $assignments = json_decode($client->request("GET", $url . "/assignments")->getBody(), true)['data'];
+            $assignments = json_decode($client->request("GET", $url . "/assignments", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
             $countAssignment = 0;
             foreach ($assignments as $ass) {
                 if ($ass['id_course'] == $crs['id']) {
@@ -153,7 +190,11 @@ class AdminCourseController extends Controller
             }
 
             $tingkatan =
-                json_decode($client->request("GET", $url . "/tingkatan/" . $crs['id_tingkatan'])->getBody(), true)['data'];
+                json_decode($client->request("GET", $url . "/tingkatan/" . $crs['id_tingkatan'], [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                    ],
+                ])->getBody(), true)['data'];
 
             $item = [
                 "id" => $crs['id'],
@@ -170,11 +211,15 @@ class AdminCourseController extends Controller
         return view('admin.page.course.smp', compact('data'));
     }
 
-    public function sma()
+    public function sma(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
-        $courses = json_decode($client->request("GET", $url . "/courses")->getBody(), true)['data'];
+        $courses = json_decode($client->request("GET", $url . "/courses", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         $course = collect([]);
         foreach ($courses as $cours) {
@@ -186,7 +231,11 @@ class AdminCourseController extends Controller
         $data = collect([]);
 
         foreach ($course as $crs) {
-            $materi = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+            $materi = json_decode($client->request("GET", $url . "/filecourses", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
             $countMateri = 0;
             foreach ($materi as $mtr) {
                 if ($mtr['id_course'] == $crs['id']) {
@@ -194,7 +243,11 @@ class AdminCourseController extends Controller
                 }
             }
 
-            $assignments = json_decode($client->request("GET", $url . "/assignments")->getBody(), true)['data'];
+            $assignments = json_decode($client->request("GET", $url . "/assignments", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
             $countAssignment = 0;
             foreach ($assignments as $ass) {
                 if ($ass['id_course'] == $crs['id']) {
@@ -203,7 +256,11 @@ class AdminCourseController extends Controller
             }
 
             $tingkatan =
-                json_decode($client->request("GET", $url . "/tingkatan/" . $crs['id_tingkatan'])->getBody(), true)['data'];
+                json_decode($client->request("GET", $url . "/tingkatan/" . $crs['id_tingkatan'], [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                    ],
+                ])->getBody(), true)['data'];
 
             $item = [
                 "id" => $crs['id'],
@@ -223,11 +280,15 @@ class AdminCourseController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         $client = new Client();
         $url = env("API_URL");
-        $tingkatan = json_decode($client->request("GET", $url . '/tingkatan')->getBody(), true)['data'];
+        $tingkatan = json_decode($client->request("GET", $url . '/tingkatan', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         return view('admin.page.course.create', compact('tingkatan'));
     }
@@ -262,7 +323,10 @@ class AdminCourseController extends Controller
                         "Content-Type" => "<Content-type header>"
                     ]
                 ]
-            ]
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
         ])->getBody(), true)['status'];
 
         if (!$response) {
@@ -275,12 +339,16 @@ class AdminCourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $filecourses = json_decode($client->request("GET", $url . "/filecourses")->getBody(), true)['data'];
+        $filecourses = json_decode($client->request("GET", $url . "/filecourses", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
         $filecourse = collect([]);
         foreach ($filecourses as $file) {
             if ($file['id_course'] == $id) {
@@ -288,7 +356,11 @@ class AdminCourseController extends Controller
             }
         }
 
-        $task = json_decode($client->request("GET", $url . '/assignments')->getBody(), true)['data'];
+        $task = json_decode($client->request("GET", $url . '/assignments', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
         $task_store = collect([]);
         foreach ($task as $tas) {
             if ($tas['id_course'] = $id) {
@@ -318,13 +390,21 @@ class AdminCourseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, string $id)
     {
         $client = new Client();
         $url = env("API_URL");
-        $tingkatan = json_decode($client->request("GET", $url . "/tingkatan")->getBody(), true)['data'];
+        $tingkatan = json_decode($client->request("GET", $url . "/tingkatan", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
-        $course = json_decode($client->request("GET", $url . '/courses/' . $id)->getBody(), true)['data'];
+        $course = json_decode($client->request("GET", $url . '/courses/' . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         return view('admin.page.course.edit', compact('course', 'tingkatan'));
     }
@@ -360,7 +440,10 @@ class AdminCourseController extends Controller
                             "Content-Type" => "<Content-type header>"
                         ]
                     ]
-                ]
+                ],
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
             ])->getBody(), true)['status'];
         } else {
             $response = json_decode($client->request("POST", $url . "/courses/" . $id, [
@@ -377,7 +460,10 @@ class AdminCourseController extends Controller
                         "name" => "deskripsi",
                         "contents" => $request->deskripsi
                     ],
-                ]
+                ],
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
             ])->getBody(), true)['status'];
         }
 
@@ -391,12 +477,16 @@ class AdminCourseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $response = json_decode($client->request("DELETE", $url . "/courses/" . $id)->getBody(), true)['status'];
+        $response = json_decode($client->request("DELETE", $url . "/courses/" . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['status'];
 
         if (!$response) {
             return redirect('/admin/course')->with('failed', 'Failed delete course');
@@ -405,7 +495,7 @@ class AdminCourseController extends Controller
         return redirect('/admin/course')->with('success', 'Success delete course');
     }
 
-    public function addmateri()
+    public function addmateri(Request $request)
     {
         return view('admin.page.course.addmateri');
     }
@@ -433,7 +523,10 @@ class AdminCourseController extends Controller
                         "Content-Type" => "<Content-type header>"
                     ]
                 ]
-            ]
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
         ])->getBody(), true)['status'];
 
         if (!$response) {
@@ -443,7 +536,7 @@ class AdminCourseController extends Controller
         return redirect('/admin/course/' . $id);
     }
 
-    public function addtask()
+    public function addtask(Request $request)
     {
         return view('admin.page.course.addtask');
     }
@@ -475,7 +568,10 @@ class AdminCourseController extends Controller
                     "name" => "id_course",
                     "contents" => $id
                 ],
-            ]
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
         ])->getBody(), true);
 
         if (!$response['status']) {
@@ -486,12 +582,16 @@ class AdminCourseController extends Controller
         return redirect('/admin/course/' . $id)->with('success', 'Success add assignment');
     }
 
-    public function editmateri(String $id)
+    public function editmateri(Request $request, String $id)
     {
         $client = new Client();
         $url = env('API_URL');
 
-        $materi = json_decode($client->request('GET', $url . '/filecourses/' . $id)->getBody(), true)['data'];
+        $materi = json_decode($client->request('GET', $url . '/filecourses/' . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         return view('admin.page.course.editmateri', compact('materi'));
     }
@@ -516,7 +616,10 @@ class AdminCourseController extends Controller
                             "Content-Type" => "<Content-type header>"
                         ]
                     ]
-                ]
+                ],
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
             ])->getBody(), true);
         } else {
             $response = json_decode($client->request("POST", $url . '/filecourses/' . $id, [
@@ -525,7 +628,10 @@ class AdminCourseController extends Controller
                         "name" => "nama",
                         "contents" => $request->nama
                     ]
-                ]
+                ],
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
             ])->getBody(), true);
         }
 
@@ -536,12 +642,16 @@ class AdminCourseController extends Controller
         return redirect('/admin/course/' . $response['data_edited']['id_course'])->with('success', 'Success edit file');
     }
 
-    public function destroymateri(String $id)
+    public function destroymateri(Request $request, String $id)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $response = json_decode($client->request("DELETE", $url . '/filecourses/' . $id)->getBody(), true);
+        $response = json_decode($client->request("DELETE", $url . '/filecourses/' . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true);
 
         if ($response['status']) {
             return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success delete materi');
@@ -550,7 +660,7 @@ class AdminCourseController extends Controller
         return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success delete materi');
     }
 
-    public function edittask(String $id)
+    public function edittask(Request $request, String $id)
     {
         $client = new Client();
         $url = env("API_URL");
@@ -582,6 +692,10 @@ class AdminCourseController extends Controller
                     "name" => "metode_pengumpulan",
                     "contents" => $request->metode_pengumpulan
                 ],
+            ], [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
             ]
         ])->getBody(), true);
 
@@ -591,12 +705,16 @@ class AdminCourseController extends Controller
         return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success edit file');
     }
 
-    public function destroytask(String $id)
+    public function destroytask(Request $request, String $id)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $response = json_decode($client->request("DELETE", $url . "/assignments/" . $id)->getBody(), true);
+        $response = json_decode($client->request("DELETE", $url . "/assignments/" . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true);
 
         if ($response['status']) {
             return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success delete materi');
@@ -604,12 +722,16 @@ class AdminCourseController extends Controller
         return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success delete materi');
     }
 
-    public function assignment(String $id)
+    public function assignment(Request $request, String $id)
     {
         $client = new Client();
         $url = env("API_URL");
 
-        $scores = json_decode($client->request("GET", $url . '/scores')->getBody(), true)['data'];
+        $scores = json_decode($client->request("GET", $url . '/scores', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
         $score = collect([]);
 
         foreach ($scores as $scr) {
@@ -618,13 +740,25 @@ class AdminCourseController extends Controller
             }
         }
 
-        $assignment = json_decode($client->request("GET", $url . "/assignments/" . $id)->getBody(), true)['data'];
+        $assignment = json_decode($client->request("GET", $url . "/assignments/" . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
-        $courses = json_decode($client->request("GET", $url . "/courses/" . $assignment['id_course'])->getBody(), true)['data'];
+        $courses = json_decode($client->request("GET", $url . "/courses/" . $assignment['id_course'], [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
+        ])->getBody(), true)['data'];
 
         $data = collect([]);
         foreach ($score as $scr) {
-            $user = json_decode($client->request("GET", $url . "/users/" . 1)->getBody(), true)['data'];
+            $user = json_decode($client->request("GET", $url . "/users/" . $request->session()->get('id_user'), [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
             $dateString = $scr['created_at'];
             $dateTime = new DateTime($dateString);
             $formattedDate = $dateTime->format('d F Y H:i:s');
@@ -662,7 +796,10 @@ class AdminCourseController extends Controller
                     "name" => "catatan",
                     "contents" => $request->catatan
                 ],
-            ]
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $request->session()->get('token'),
+            ],
         ])->getBody(), true);
 
         if ($response['status']) {

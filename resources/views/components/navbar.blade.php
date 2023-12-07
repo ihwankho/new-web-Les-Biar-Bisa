@@ -32,8 +32,7 @@
                     alt="images">
                 <p class="text-base">PAYMENT</p>
             </a>
-            <a class="item-nav {{ $page == 'logout' ? 'text-white bg-primary' : 'text-primary' }}"
-                href="{{ route('dashboard.index') }}">
+            <a class="item-nav {{ $page == 'logout' ? 'text-white bg-primary' : 'text-primary' }}" href="/logout">
                 <img src="{{ asset('assets/icon/logout.png') }}" alt="images">
                 <p class="text-base">LOGOUT</p>
             </a>
