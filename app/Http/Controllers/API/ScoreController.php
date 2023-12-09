@@ -16,7 +16,7 @@ class ScoreController extends Controller
 
             for ($i = 0; $i < $scores->count(); $i++) {
                 if ($scores[$i]->file != null) {
-                    $scores[$i]['file'] = url(public_path('/assets/assignment/' . $scores[$i]['file']));
+                    $scores[$i]['file'] = url('/assets/assignment/' . $scores[$i]['file']);
                 }
             }
 
@@ -39,7 +39,7 @@ class ScoreController extends Controller
             $score = Score::findOrFail($id);
 
             if ($score->file != null) {
-                $score['file'] = url(public_path('/assets/assignment/' . $score->file));
+                $score['file'] = url('/assets/assignment/' . $score->file);
             }
 
             return response()->json([
@@ -168,7 +168,7 @@ class ScoreController extends Controller
                     "status" => $status,
                     "nama" => $nama,
                     "url" => $url,
-                    "file" => url(public_path('/assets/assignment/' . $fileName)),
+                    "file" => url('/assets/assignment/' . $fileName),
                     "nilai" => $nilai,
                     "catatan" => $catatan
                 ],

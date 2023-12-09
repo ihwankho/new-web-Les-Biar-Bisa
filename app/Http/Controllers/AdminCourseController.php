@@ -746,7 +746,7 @@ class AdminCourseController extends Controller
             ],
         ])->getBody(), true)['data'];
 
-        $courses = json_decode($client->request("GET", $url . "/courses/" . $assignment['id_course'], [
+        $course = json_decode($client->request("GET", $url . "/courses/" . $assignment['id_course'], [
             'headers' => [
                 'Authorization' => 'Bearer ' . $request->session()->get('token'),
             ],

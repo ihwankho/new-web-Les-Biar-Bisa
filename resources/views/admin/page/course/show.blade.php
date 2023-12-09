@@ -39,9 +39,9 @@
     <a href="/admin/course/{{ $page }}/task/add" class="btn block w-max text-xs mt-5">+ Add Task</a>
     @if ($tasks->count() > 0)
         @foreach ($tasks as $t)
-            <div class="block bg-slate-100 p-2 w-1/5 rounded-md  my-3 relative">
+            <div class="block bg-slate-100 p-2 w-max rounded-md  my-3 relative">
                 <a href="/admin/course/task/{{ $t['id'] }}" class="block">
-                    <div class="flex justify-between items-center">
+                    <div class="flex justify-between gap-3 items-center">
                         <div class="flex items-center gap-3">
                             <img src="{{ asset('/assets/icon/document_task.svg') }}" alt="icon_documentTask">
                             <p class="font-bold text-lg text-primary uppercase">{{ $t['nama'] }}</p>

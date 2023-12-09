@@ -27,6 +27,6 @@
             </div>
         @endforeach
     @else
-        <p>Data schedule is Empty</p>
+        <p class="page-title">Data schedule is Empty</p>
     @endif
 @endsection

@@ -60,22 +60,25 @@
                                         alt="icon-viewdetail">
                                     <p>Detail</p>
                                 </a>
-                                <a href="/payment/edit/{{ $item['id'] }}"
-                                    class="flex items-center gap-1 rounded-md bg-yellow-400 py-1 px-2 text-xs font-semibold text-white">
-                                    <img width="12" src="{{ asset('/assets/icon/pencil.svg') }}" alt="icon-viewdetail">
-                                    <p>Edit</p>
-                                </a>
-                                <form action="/payment/delete/{{ $item['id'] }}" method="post">
-                                    @method('DELETE')
-                                    @csrf
-                                    <button onclick="return confirm('Are you sure?')"
-                                        class="flex border-none outline-none items-center gap-1 rounded-md bg-rose-400 py-1 px-2 text-xs font-semibold text-white"
-                                        type="submit">
-                                        <img width="12" src="{{ asset('/assets/icon/trash.svg') }}"
+                                @if ($item['status'] == 'pending')
+                                    <a href="/payment/edit/{{ $item['id'] }}"
+                                        class="flex items-center gap-1 rounded-md bg-yellow-400 py-1 px-2 text-xs font-semibold text-white">
+                                        <img width="12" src="{{ asset('/assets/icon/pencil.svg') }}"
                                             alt="icon-viewdetail">
-                                        <p>Delete</p>
-                                    </button>
-                                </form>
+                                        <p>Edit</p>
+                                    </a>
+                                    <form action="/payment/delete/{{ $item['id'] }}" method="post">
+                                        @method('DELETE')
+                                        @csrf
+                                        <button onclick="return confirm('Are you sure?')"
+                                            class="flex border-none outline-none items-center gap-1 rounded-md bg-rose-400 py-1 px-2 text-xs font-semibold text-white"
+                                            type="submit">
+                                            <img width="12" src="{{ asset('/assets/icon/trash.svg') }}"
+                                                alt="icon-viewdetail">
+                                            <p>Delete</p>
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

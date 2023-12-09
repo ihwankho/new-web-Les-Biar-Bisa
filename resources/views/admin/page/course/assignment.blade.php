@@ -23,16 +23,20 @@
                                 {{ $item['waktu_pengumpulan'] }}</span>
                         </div>
                         <p class="text-xs"><b>From:</b> {{ $item['user'] }}</p>
-                        <table class="mt-5">
+                        <table cellpadding="5" class="mt-5">
                             @if ($item['file'])
                                 <tr>
                                     <td><span class="font-semibold">File Pengumpulan</span></td>
                                     <td>
+                                        @php
+                                            $name = explode('/', $item['file']);
+                                            $fileName = $name[count($name) - 1];
+                                        @endphp
                                         <a class="flex ml-3 font-medium text-primary items-center"
-                                            href="{{ asset('/assets/course/materi/' . $item['file']) }}"
-                                            download="{{ asset('/assets/course/materi/' . $item['file']) }}"> <img
-                                                src="{{ asset('/assets/icon/file.svg') }}" width="16" alt="file-icon">
-                                            <p>{{ $item['file'] }}</p>
+                                            href="{{ asset('/assets/assignment/' . $fileName) }}"
+                                            download="{{ $fileName }}"> <img src="{{ asset('/assets/icon/file.svg') }}"
+                                                width="16" alt="file-icon">
+                                            <p>{{ $fileName }}</p>
                                         </a>
                                     </td>
                                 </tr>
@@ -41,7 +45,7 @@
                                 <tr>
                                     <td><span class="font-semibold">URL Pengumpulan</span></td>
                                     <td>
-                                        <a class="ml-3 text-blue-500 underline"
+                                        <a class="ml-3 text-blue-500 underline" target="_blank"
                                             href="{{ $item['url'] }}">{{ $item['url'] }}</a>
                                     </td>
                                 </tr>
