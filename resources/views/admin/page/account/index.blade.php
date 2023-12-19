@@ -5,6 +5,11 @@
 @section('content')
     <h5 class="page-title">Account</h5>
     <a href="/admin/account/create" class="btn inline-block">+ Add Account</a>
+    @if (Session::has('error'))
+        <div class="alert alert-danger" role="alert">
+            {{ Session::get('error') }}
+        </div>
+    @endif
     @if (count($data) > 0)
         <div class="relative overflow-x-auto mt-5 w-max max-w-full sm:rounded-lg">
             <table class="text-sm text-left rtl:text-center text-gray-500 ">

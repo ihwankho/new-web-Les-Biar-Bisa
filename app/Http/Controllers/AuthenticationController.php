@@ -141,6 +141,8 @@ class AuthenticationController extends Controller
             } else {
                 return redirect('/dashboard');
             }
+        } else {
+            return redirect("/login")->with('error', $response['message']);
         }
     }
 

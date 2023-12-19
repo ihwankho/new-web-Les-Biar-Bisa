@@ -7,7 +7,7 @@
     <h1 class="page-title">Edit Account</h1>
 
     <form class="flex mt-5 flex-col gap-3" method="POST" enctype="multipart/form-data"
-        action="/admin/account/{{ $users->id }}">
+        action="/admin/account/{{ $users['id'] }}">
         @method('PUT')
         @csrf
         <table cellpadding="3">
@@ -21,19 +21,19 @@
                     <select class="p-2 w-80 rounded-md" name="tingkatan" id="tingkatan">
                         <option disabled selected="false" value="">Pilih Tingkatan</option>
                         @foreach ($tingkatan as $item)
-                            @if ($item->nama == 'SD')
-                                <option value="{{ $item->id }}"
-                                    {{ $users->id_tingkatan == $item->id ? 'selected=true' : '' }}>
+                            @if ($item['nama'] == 'SD')
+                                <option value="{{ $item['id'] }}"
+                                    {{ $users['id_tingkatan'] == $item['id'] ? 'selected=true' : '' }}>
                                     Sekolah Dasar
                                 </option>
-                            @elseif($item->nama == 'SMP')
-                                <option value="{{ $item->id }}"
-                                    {{ $users->id_tingkatan == $item->id ? 'selected=true' : '' }}>
+                            @elseif($item['nama'] == 'SMP')
+                                <option value="{{ $item['id'] }}"
+                                    {{ $users['id_tingkatan'] == $item['id'] ? 'selected=true' : '' }}>
                                     Sekolah Menengah
                                     Pertama</option>
-                            @elseif($item->nama == 'SMA')
-                                <option value="{{ $item->id }}"
-                                    {{ $users->id_tingkatan == $item->id ? 'selected=true' : '' }}>
+                            @elseif($item['nama'] == 'SMA')
+                                <option value="{{ $item['id'] }}"
+                                    {{ $users['id_tingkatan'] == $item['id'] ? 'selected=true' : '' }}>
                                     Sekolah Menengah
                                     Atas</option>
                             @endif
@@ -49,7 +49,8 @@
                 </td>
                 <td>
                     <input class="p-2 w-80 rounded-md text-xs border border-slate-400 outline-none" type="text"
-                        name="username" value="{{ $users->username }}" placeholder="Masukkan username anda" id="username">
+                        name="username" value="{{ $users['username'] }}" placeholder="Masukkan username anda"
+                        id="username">
                 </td>
             </tr>
             <tr>
@@ -60,7 +61,8 @@
                 </td>
                 <td>
                     <input class="p-2 w-80 rounded-md text-xs border border-slate-400 outline-none" type="text"
-                        name="fullname" value="{{ $users->fullname }}" placeholder="Masukkan fullname anda" id="fullname">
+                        name="fullname" value="{{ $users['fullname'] }}" placeholder="Masukkan fullname anda"
+                        id="fullname">
                 </td>
             </tr>
             <tr>

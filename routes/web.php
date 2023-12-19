@@ -33,6 +33,12 @@ Route::get("/login", [AuthenticationController::class, 'login_user']);
 Route::post("/login", [AuthenticationController::class, 'user_login']);
 
 Route::middleware('LoginUser')->group(function () {
+    Route::get("/", function () {
+        return redirect("/dashboard");
+    });
+    Route::get("/admin", function () {
+        return redirect("/admin/dashboard");
+    });
     Route::get("/logout", [AuthenticationController::class, 'user_logout']);
     Route::resource('/dashboard', DashboardController::class);
     Route::resource('/mycourse', CourseController::class);

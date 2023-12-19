@@ -155,10 +155,10 @@ class AdminAccountController extends Controller
             'headers' => [
                 'Authorization' => 'Bearer ' . $request->session()->get('token'),
             ],
-        ])->getBody(), true)['status'];
+        ])->getBody(), true);
 
-        if (!$response) {
-            return redirect('/admin/account')->with('failed', 'Failed delete account');
+        if (!$response['status']) {
+            return redirect('/admin/account')->with('error', "Cannot delete this user, because this user have an data.");
         }
 
         return redirect('/admin/account')->with('success', 'Success delete account');

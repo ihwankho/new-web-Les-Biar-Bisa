@@ -29,15 +29,15 @@
     }
 
     .alert-primary {
-        @apply font-medium text-xs w-1/2 p-2 my-3 rounded-md bg-blue-400 text-white;
+        @apply font-medium text-xs w-max p-2 my-3 rounded-md bg-blue-400 text-white;
     }
 
     .alert-warning {
-        @apply font-medium text-xs w-1/2 p-2 my-3 rounded-md bg-blue-400 text-white;
+        @apply font-medium text-xs w-max p-2 my-3 rounded-md bg-yellow-400 text-white;
     }
 
     .alert-danger {
-        @apply font-medium text-xs w-1/2 p-2 my-3 rounded-md bg-blue-400 text-white;
+        @apply font-medium text-xs w-max p-2 my-3 rounded-md bg-rose-400 text-white;
     }
 
     .btn {

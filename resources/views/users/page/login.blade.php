@@ -31,6 +31,12 @@
 
             <button class="w-full bg-primary p-2 text-center font-semibold text-white mt-3 mb-2 rounded-md"
                 type="submit">Login Now</button>
+
+            @if (Session::has('error'))
+                <div class="alert alert-danger" role="alert">
+                    {{ Session::get('error') }}
+                </div>
+            @endif
         </form>
     </div>
 </body>
