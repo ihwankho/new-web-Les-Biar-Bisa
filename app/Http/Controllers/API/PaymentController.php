@@ -12,7 +12,13 @@ class PaymentController extends Controller
     public function index()
     {
         try {
-            $payments = Payment::with('users')->get();
+            $idUser = request('id-user');
+
+            if ($idUser != null) {
+                $payments = Payment::with('users')->where('id_user', '=', $idUser)->get();
+            } else {
+                $payments = Payment::with('users')->get();
+            }
 
             for ($i = 0; $i < $payments->count(); $i++) {
                 $payments[$i]['bukti'] = url("/assets/payment/" . $payments[$i]['bukti']);

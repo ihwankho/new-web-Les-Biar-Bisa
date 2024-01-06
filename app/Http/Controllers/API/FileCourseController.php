@@ -12,7 +12,17 @@ class FileCourseController extends Controller
     public function index()
     {
         try {
-            $fileCourses = FileCourse::all();
+            $idCourse = request('id-course');
+
+            if ($idCourse != null) {
+                $fileCourses = FileCourse::where('id_course', '=', $idCourse)->get();
+            } else {
+                $fileCourses = FileCourse::all();
+            }
+
+            for ($i = 0; $i < $fileCourses->count(); $i++) {
+                $fileCourses[$i]['file'] = url('/assets/course/materi/' . $fileCourses[$i]['file']);
+            }
 
             return response()->json([
                 "status" => true,

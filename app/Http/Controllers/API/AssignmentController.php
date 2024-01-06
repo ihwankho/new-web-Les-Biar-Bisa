@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Assignment;
+use App\Models\Course;
+use App\Models\Tingkatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -12,7 +14,26 @@ class AssignmentController extends Controller
     public function index()
     {
         try {
-            $assignments = Assignment::all();
+            $idTingkatan = request('id-tingkatan');
+            $idCourse = request('id-course');
+
+            if ($idTingkatan != null && $idCourse == null) {
+                $assignments = collect([]);
+                $courses = Course::where('id_tingkatan', '=', $idTingkatan)->get();
+                $assignment = Assignment::all();
+
+                foreach ($courses as $crs) {
+                    foreach ($assignment as $ass) {
+                        if ($ass['id_course'] == $crs['id']) {
+                            $assignments->push($ass);
+                        }
+                    }
+                }
+            } else if ($idCourse != null && $idTingkatan == null) {
+                $assignments = Assignment::where('id_course', '=', $idCourse)->get();
+            } else {
+                $assignments = Assignment::all();
+            }
 
 
             return response()->json([

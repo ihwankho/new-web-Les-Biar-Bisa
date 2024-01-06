@@ -12,11 +12,26 @@ class ScoreController extends Controller
     public function index()
     {
         try {
-            $scores = Score::all();
+            $idUser = request('id-user');
+            $idAssignment = request('id-assignment');
 
-            for ($i = 0; $i < $scores->count(); $i++) {
-                if ($scores[$i]->file != null) {
-                    $scores[$i]['file'] = url('/assets/assignment/' . $scores[$i]['file']);
+            if ($idUser != null && $idAssignment == null) {
+                $scores = Score::where('id_user', '=', $idUser)->get();
+            } else if ($idUser != null && $idAssignment != null) {
+                $scores = Score::where('id_user', '=', $idUser)->where('id_assignment', '=', $idAssignment)->first();
+            } else {
+                $scores = Score::all();
+            }
+
+            if ($idUser != null && $idAssignment != null) {
+                if ($scores['file'] != null) {
+                    $scores['file'] = url('/assets/assignment/' . $scores['file']);
+                }
+            } else {
+                for ($i = 0; $i < $scores->count(); $i++) {
+                    if ($scores[$i]->file != null) {
+                        $scores[$i]['file'] = url('/assets/assignment/' . $scores[$i]['file']);
+                    }
                 }
             }
 

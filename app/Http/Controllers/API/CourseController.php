@@ -12,7 +12,14 @@ class CourseController extends Controller
     public function index()
     {
         try {
-            $courses = Course::with('tingkatan')->get();
+            $idTingkatan = request("id-tingkatan");
+            if ($idTingkatan != null) {
+
+                $courses = Course::with('tingkatan')->where("id_tingkatan", "=", $idTingkatan)->get();
+            } else {
+
+                $courses = Course::with('tingkatan')->get();
+            }
 
             for ($i = 0; $i < $courses->count(); $i++) {
                 $courses[$i]['thumbnail'] = url('/assets/course/' . $courses[$i]['thumbnail']);
