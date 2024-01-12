@@ -75,7 +75,7 @@ class PaymentController extends Controller
                 'headers' => [
                     'Authorization' => 'Bearer ' . $request->session()->get('token'),
                 ]
-            ])->getBody(), true)['status'];
+            ])->getBody(), true);
         } else {
             $response = json_decode($client->request("POST", $url . "/payments", [
                 "multipart" => [
@@ -95,10 +95,10 @@ class PaymentController extends Controller
                 'headers' => [
                     'Authorization' => 'Bearer ' . $request->session()->get('token'),
                 ],
-            ])->getBody(), true)['status'];
+            ])->getBody(), true);
         }
 
-        if (!$response) {
+        if (!$response['status']) {
             return redirect('/payment')->with('failed', 'Failed add payment');
         } else {
             return redirect('/payment')->with('success', 'Success add payment');

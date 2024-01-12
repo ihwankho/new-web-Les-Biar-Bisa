@@ -17,6 +17,32 @@
             class="py-1 px-2 inline-block text-xs rounded-full border border-primary text-white bg-primary font-semibold">Unapproved</a>
     </div>
 
+    <form class="mt-5" style="display: flex; align-items: center" method="get" action="/admin/payment/unapproved">
+        <div class="mb-3 mr-3">
+            <label for="month" class="form-label">Month:</label>
+            <select class="form-select" aria-label="Default select example" name="month" id="month">
+                @for ($j = 1; $j <= 12; $j++)
+                    <option value="{{ $j }}" {{ request('month') == $j ? 'selected' : '' }}>
+                        {{ date('F', mktime(0, 0, 0, $j, 1)) }}
+                    </option>
+                @endfor
+            </select>
+        </div>
+
+        <div class="mb-3 mr-3">
+            <label for="year" class="form-label">Year:</label>
+            <select class="form-select" aria-label="Default select example" name="year" id="year">
+                @for ($j = date('Y'); $j >= 2000; $j--)
+                    <option value="{{ $j }}" {{ request('year') == $j ? 'selected' : '' }}>
+                        {{ $j }}
+                    </option>
+                @endfor
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+
     <div class="mt-5 flex flex-wrap gap-3">
         @if ($data->count() > 0)
             @foreach ($data as $pay)

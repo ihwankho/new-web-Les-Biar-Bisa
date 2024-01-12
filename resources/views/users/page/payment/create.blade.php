@@ -6,7 +6,7 @@
     <h1 class="page-title">Tambah Pembayaran</h1>
     <div class="p-3 text-white rounded-md w-max bg-green-400">
         <p class="font-medium">Silahkan melakukan transfer ke
-            <br> BANK BRI a.n Subayil
+            <br>BANK BRI a.n Subayil
         </p>
         <p class="font-extrabold">2342 - 23943 - 382498 - 98234</p>
     </div>
@@ -22,7 +22,8 @@
                 </td>
                 <td>
                     <input class="p-2 w-80 rounded-md text-xs border border-slate-400 outline-none" type="text"
-                        name="nama" placeholder="Berikan nama pembayaran..." id="nama">
+                        name="nama" placeholder="Berikan nama pembayaran..." id="nama"> <input class="hidden"
+                        type="text" name="id_tingkatan" id="id_tingkatan" value="">
                 </td>
             </tr>
             <tr>

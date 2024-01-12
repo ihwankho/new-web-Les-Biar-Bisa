@@ -14,8 +14,13 @@ class PaymentController extends Controller
         try {
             $idUser = request('id-user');
 
+            $month = request('month');
+            $year = request('year');
+
             if ($idUser != null) {
                 $payments = Payment::with('users')->where('id_user', '=', $idUser)->get();
+            } else if ($month != null && $year != null) {
+                $payments = Payment::with('users')->whereMonth('created_at', request('month'))->whereYear('created_at', request('year'))->get();
             } else {
                 $payments = Payment::with('users')->get();
             }
@@ -94,7 +99,7 @@ class PaymentController extends Controller
             return response()->json([
                 "status" => true,
                 "message" => "ADD data payment successfully",
-                "data_updated" => [
+                "data_created" => [
                     "nama" => $request->nama,
                     "note" => $request->note,
                     "bukti" => $fileName,

@@ -16,11 +16,22 @@ class AdminPaymentController extends Controller
         $client = new Client();
         $url = env("API_URL");
 
-        $data = json_decode($client->request("GET", $url . '/payments', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $request->session()->get('token'),
-            ],
-        ])->getBody(), true)['data'];
+        $month = request('month');
+        $year = request('year');
+
+        if ($month != null && $year != null) {
+            $data = json_decode($client->request("GET", $url . '/payments?month=' . $month . '&year=' . $year, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
+        } else {
+            $data = json_decode($client->request("GET", $url . '/payments', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
+        }
 
         $i = 1;
 
@@ -41,11 +52,23 @@ class AdminPaymentController extends Controller
         $client = new Client();
         $url = env("API_URL");
 
-        $datas = json_decode($client->request("GET", $url . "/payments", [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $request->session()->get('token'),
-            ],
-        ])->getBody(), true)['data'];
+        $month = request('month');
+        $year = request('year');
+
+        if ($month != null && $year != null) {
+            $datas = json_decode($client->request("GET", $url . '/payments?month=' . $month . '&year=' . $year, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
+        } else {
+            $datas = json_decode($client->request("GET", $url . '/payments', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
+        }
+
         $data = collect([]);
 
         foreach ($datas as $dt) {
@@ -73,11 +96,23 @@ class AdminPaymentController extends Controller
         $client = new Client();
         $url = env("API_URL");
 
-        $datas = json_decode($client->request("GET", $url . "/payments", [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $request->session()->get('token'),
-            ],
-        ])->getBody(), true)['data'];
+        $month = request('month');
+        $year = request('year');
+
+        if ($month != null && $year != null) {
+            $datas = json_decode($client->request("GET", $url . '/payments?month=' . $month . '&year=' . $year, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
+        } else {
+            $datas = json_decode($client->request("GET", $url . '/payments', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
+        }
+
         $data = collect([]);
 
         foreach ($datas as $dt) {
@@ -105,11 +140,23 @@ class AdminPaymentController extends Controller
         $client = new Client();
         $url = env("API_URL");
 
-        $datas = json_decode($client->request("GET", $url . "/payments", [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $request->session()->get('token'),
-            ],
-        ])->getBody(), true)['data'];
+        $month = request('month');
+        $year = request('year');
+
+        if ($month != null && $year != null) {
+            $datas = json_decode($client->request("GET", $url . '/payments?month=' . $month . '&year=' . $year, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
+        } else {
+            $datas = json_decode($client->request("GET", $url . '/payments', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
+                ],
+            ])->getBody(), true)['data'];
+        }
+
         $data = collect([]);
 
         foreach ($datas as $dt) {

@@ -137,8 +137,10 @@ class AuthenticationController extends Controller
             ]);
 
             if ($response['data']['role'] == "admin") {
+                // dd($request->session()->get('fullname'));
                 return redirect('/admin/dashboard');
             } else {
+                session(['id_tingkatan' => $response['data']['id_tingkatan']]);
                 return redirect('/dashboard');
             }
         } else {
