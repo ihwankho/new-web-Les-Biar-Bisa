@@ -3,6 +3,8 @@
 @section('title', 'Dashboard')
 
 @section('content')
+<div class="relative">
+    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/background/backgroundU/Group.png'); z-index: -1; background-repeat:no-repeat; background-size: auto; width: 1570px; height: 900px; background-position: right;"></div>
     <div class="pt-7">
         <h5 class="page-title">Your Course</h5>
         <p class="font-semibold bg-primary p-3 mt-2 rounded-lg text-base flex items-center gap-3 text-white w-max"><span
@@ -35,7 +37,9 @@
     <div class="pt-7">
         <h5 class="page-title">Your course schedule</h5>
         <div class="w-max max-w-lg p-3 bg-primary rounded-lg mt-3">
-            <img src="{{ $schedule['jadwal'] }}" alt="Schedule">
+            <a href="{{ $schedule['jadwal'] }}" target="_blank">
+            <img src="{{ $schedule['jadwal'] }}" alt="Schedule" class="cursor-pointer">
+            </a>
         </div>
     </div>
 @endsection

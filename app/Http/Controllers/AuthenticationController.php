@@ -34,7 +34,7 @@ class AuthenticationController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Username & Password does not match with our record.',
-                ], 401);
+                ], 200);
             }
 
             $user = User::where('username', $request->username)->first();

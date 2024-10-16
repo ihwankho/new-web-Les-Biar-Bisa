@@ -12,7 +12,14 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ScoreController;
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\AnswerController;
+use App\Http\Controllers\SendNotificationsController;
+use App\Models\Quiz;
 use Illuminate\Support\Facades\Route;
+use App\Mail\QuizNotificationMail;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,4 +114,30 @@ Route::middleware('LoginUser')->group(function () {
     Route::delete('/admin/course/task/delete/{id}', [AdminCourseController::class, 'destroytask']);
     Route::get('/admin/course/task/{id}', [AdminCourseController::class, 'assignment']);
     Route::put('/admin/course/task/{id}', [AdminCourseController::class, 'nilai']);
+
+    // Routing untuk quiz
+    Route::get('/admin/quiz', [QuizController::class, 'index'])->name('quiz.index');
+    Route::get('/admin/quiz/create', [QuizController::class, 'create'])->name('quiz.create');
+    Route::post('/admin/quiz/store', [QuizController::class, 'store'])->name('quiz.store');
+    Route::get('/admin/quiz/{id}', [QuizController::class, 'show'])->name('quiz.show');
+    Route::delete('/quiz/{quiz}', [QuizController::class, 'destroy'])->name('quiz.destroy');
+
+    //question
+    Route::post('/quiz/{quiz}/questions/store', [QuestionController::class, 'store'])->name('questions.store');
+    Route::get('/quizzes/{quiz}/questions/create', [QuestionController::class, 'create'])->name('questions.create');
+    Route::get('/admin/{quiz}/questions', [QuestionController::class, 'index'])->name('questions.index');
+    Route::delete('/admin/questions/{id}}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+
+    // jawaban
+    Route::post('/quiz/{quiz}/questions/answers/store', [AnswerController::class, 'store'])->name('answers.store');
+
+    // quizzess
+
+    Route::get('/quizzess', [QuizController::class, 'studentindex']);
+    Route::post('/quizzess/{quiz}', [QuizController::class, 'studentsubmit']);
+    Route::get('/quizzess/{id}', [QuizController::class, 'studentshow']);
+    Route::get("/admin/quizzes/{quizId}", [QuizController::class, 'status']);
+
+    //NOTIF
+    Route::get('/send-notifications/{notification}', [SendNotificationsController::class, 'sendnotification']);
 });

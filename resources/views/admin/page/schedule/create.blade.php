@@ -21,7 +21,7 @@
                         <option disabled value="">Pilih Tingkatan</option>
                         <option value="SD">Sekolah Dasar</option>
                         <option value="SMP">Sekolah Menengah Pertama</option>
-                        <option value="SMP">Sekolah Menengah Atas</option>
+                        <option value="SMA">Sekolah Menengah Atas</option>
                     </select>
                 </td>
             </tr>

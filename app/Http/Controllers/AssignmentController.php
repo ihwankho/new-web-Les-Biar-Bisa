@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DateTime;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class AssignmentController extends Controller
 {
@@ -41,15 +42,7 @@ class AssignmentController extends Controller
             ],
         ])->getBody(), true)['data'];
 
-        $file_course = collect([]);
-        foreach ($file as $item) {
-            foreach ($courses as $crs) {
-                if ($crs['id'] == $item['id_course']) {
-                    $file_course->push($item);
-                    break;
-                }
-            }
-        }
+
 
         $score = json_decode($client->request("GET", $url . "/scores", [
             'headers' => [

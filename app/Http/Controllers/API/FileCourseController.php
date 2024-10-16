@@ -62,8 +62,9 @@ class FileCourseController extends Controller
             $validator = Validator::make($request->all(), [
                 "nama" => "required",
                 "file" => "required|mimes:jpeg,jpg,png,pdf",
-                "id_course" => "required"
-            ]);
+                "id_course" => "required",
+                "link" => ["required", "regex:/^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+/"]
+]);
 
             if ($validator->fails()) {
                 return response()->json([
@@ -82,6 +83,7 @@ class FileCourseController extends Controller
                 "nama" => $request->nama,
                 "file" => $fileName,
                 "id_course" => $request->id_course,
+                "link" => $request->link
             ]);
 
             return response()->json([
@@ -89,8 +91,9 @@ class FileCourseController extends Controller
                 "message" => "ADD data file course successfully",
                 "data" => [
                     "nama" => $request->nama,
+                    "link" => $request->link,
                     "file" => $fileName,
-                    "id_course" => $request->id_course,
+                    "id_course" => $request->id_course
                 ]
             ]);
         } catch (\Exception $e) {
@@ -118,7 +121,9 @@ class FileCourseController extends Controller
 
             $fileCourse->update([
                 "nama" => $request->nama,
+                "link" => $request->link,
                 "file" => $fileName,
+                
             ]);
 
             return response()->json([
@@ -126,6 +131,7 @@ class FileCourseController extends Controller
                 "message" => "EDIT data file course successfully",
                 "data_edited" => [
                     "nama" => $request->nama,
+                    "link" => $request->link,
                     "file" => $fileName,
                     "id_course" => $fileCourse->id_course
                 ]
@@ -152,7 +158,8 @@ class FileCourseController extends Controller
             return response()->json([
                 "status" => true,
                 "message" => "DELETE data file course by id successfully",
-                "id_course" => $fileCourse->id_course
+                "id_course" => $fileCourse->id_course,
+                
             ]);
         } catch (\Exception $e) {
             return response()->json([

@@ -3,6 +3,8 @@
 @section('title', 'Admin Payment')
 
 @section('content')
+<div class="relative">
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/background/backgroundU/Group.png'); z-index: -1; background-repeat:no-repeat; background-size: auto; width: 1580px; height: 940px; background-position: right;"></div>    
     <h5 class="page-title">Payment</h5>
 
     <div>
@@ -88,4 +90,5 @@
             <p class="page-title">Data payments is empty</p>
         @endif
     </div>
+</div>
 @endsection

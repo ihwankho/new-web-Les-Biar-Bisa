@@ -363,7 +363,7 @@ class AdminCourseController extends Controller
         ])->getBody(), true)['data'];
         $task_store = collect([]);
         foreach ($task as $tas) {
-            if ($tas['id_course'] = $id) {
+            if ($tas['id_course'] == $id) {
                 $task_store->push($tas);
             }
         }
@@ -512,6 +512,10 @@ class AdminCourseController extends Controller
                     "contents" => $request->nama
                 ],
                 [
+                    "name" => "link",
+                    "contents" => $request->link
+                ],
+                [
                     "name" => "id_course",
                     "contents" => $id
                 ],
@@ -568,6 +572,7 @@ class AdminCourseController extends Controller
                     "name" => "id_course",
                     "contents" => $id
                 ],
+
             ],
             'headers' => [
                 'Authorization' => 'Bearer ' . $request->session()->get('token'),
@@ -608,6 +613,12 @@ class AdminCourseController extends Controller
                         "name" => "nama",
                         "contents" => $request->nama
                     ],
+
+                    [
+                        "name" => "link",
+                        "contents" => $request->link
+
+                    ],
                     [
                         "name" => "file",
                         "contents" => fopen($request->file('file'), 'r'),
@@ -627,6 +638,10 @@ class AdminCourseController extends Controller
                     [
                         "name" => "nama",
                         "contents" => $request->nama
+                    ],
+                    [
+                        "name" => "link",
+                        "contents" => $request->link
                     ]
                 ],
                 'headers' => [
@@ -700,9 +715,9 @@ class AdminCourseController extends Controller
         ])->getBody(), true);
 
         if ($response['status']) {
-            return redirect('/admin/course/' . $response['id_course'])->with('failed', 'Failed edit file');
+            return redirect('/admin/course/' . $response['id_course'])->with('failed', 'Failed');
         }
-        return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success edit file');
+        return redirect('/admin/course/' . $response['id_course'])->with('success', 'Success');
     }
 
     public function destroytask(Request $request, String $id)
@@ -803,8 +818,8 @@ class AdminCourseController extends Controller
         ])->getBody(), true);
 
         if ($response['status']) {
-            return redirect('/admin/course/task/' . $response['id_assignment'])->with('failed', 'Failed add nilai and note');
+            return redirect('/admin/course/task/' . $response['id_assignment'])->with('failed', 'Failed add');
         }
-        return redirect('/admin/course/task/' . $response['id_assignment'])->with('success', 'Success add nilai and note');
+        return redirect('/admin/course/task/' . $response['id_assignment'])->with('success', 'Success add');
     }
 }

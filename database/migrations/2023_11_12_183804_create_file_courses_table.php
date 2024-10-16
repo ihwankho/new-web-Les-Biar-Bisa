@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('file');
             $table->unsignedBigInteger('id_course');
+            $table->string('link', 255);
             $table->timestamps();
 
             $table->foreign('id_course')->references('id')->on('Course');

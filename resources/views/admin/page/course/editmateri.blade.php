@@ -26,6 +26,19 @@
                         value="{{ $materi['nama'] }}" name="nama" placeholder="Masukkan nama course anda" id="nama">
                 </td>
             </tr>
+
+            <tr>
+                <td>
+                    <label class="space-x-2" for="nama">
+                        <span class="font-semibold">link YouTube</span>
+                    </label>
+                </td>
+                <td>
+                    <input class="p-2 w-80 rounded-md text-xs border border-slate-400 outline-none" type="text"
+                        value="{{ $materi['link'] }}" name="link" placeholder="Masukkan nama course anda" id="link">
+                </td>
+            </tr>
+
             <tr>
                 <td>
                     <label class="space-x-2" for="file">

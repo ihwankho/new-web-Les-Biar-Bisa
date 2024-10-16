@@ -3,7 +3,7 @@
    @endphp
 
 
-   <nav class="shadow-md h-screen overflow-y-auto relative w-80">
+   <nav class="shadow-md h-screen overflow-y-auto relative w-80" style="background-image: url('/assets/background/english.png'); z-index: -0; background-size: auto; background-repeat: no-repeat; background-position: bottom; background-color: #F3C2C2;">
        <h1 class="text-3xl w-max p-5 my-12 font-extrabold text-primary text-center">LES BIAR BISA</h1>
        <div class="pr-5 flex flex-col gap-4 menu-sidebar">
            <a class="item-nav {{ $page == 'dashboard' ? 'text-white bg-primary' : 'text-primary' }}"
@@ -18,6 +18,13 @@
                    alt="images">
                <p class="text-base">COURSE</p>
            </a>
+
+           <a class="item-nav {{ $page == 'quiz' ? 'text-white bg-primary' : 'text-primary' }}" href="/admin/quiz">
+                <img src="{{ $page == 'quiz' ? asset('assets/icon/quiz-light.png') : asset('assets/icon/quiz-dark.png') }}" 
+                    alt="">
+                <p class="text-base">QUIZZ</p>
+            </a>
+        
            <a class="item-nav {{ $page == 'schedule' ? 'text-white bg-primary' : 'text-primary' }}"
                href="/admin/schedule">
                <img src="{{ $page == 'schedule' ? asset('assets/icon/schedule-light.png') : asset('assets/icon/schedule-dark.png') }}"
@@ -39,6 +46,7 @@
            <a class="item-nav {{ $page == 'logout' ? 'text-white bg-primary' : 'text-primary' }}" href="/logout">
                <img src="{{ asset('assets/icon/logout.png') }}" alt="images">
                <p class="text-base">LOGOUT</p>
-           </a>
-       </div>
+            </a>
+        </div>
    </nav>
+

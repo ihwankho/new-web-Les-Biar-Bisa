@@ -23,7 +23,7 @@ class StudentController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 "status" => false,
-                "message" => $e->getMessage()
+                "message" => $e->getMessage()   
             ]);
         }
     }

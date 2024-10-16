@@ -5,58 +5,69 @@
 @section('content')
     <h1 class="font-extrabold text-lg text-primary uppercase">{{ $course['nama'] }}</h1>
     <p class="font-semibold text-primary">{{ $course['deskripsi'] }}</p>
-    <div class="mt-5 grid grid-cols-2 gap-3 justify-between">
+    <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3 justify-between">
         <div>
             @if ($file_course->count() > 0)
                 @foreach ($file_course as $file)
-                    <a class="flex gap-3 font-medium bg-slate-100 w-1/2 p-2 rounded-md text-primary items-center"
-                        href="{{ asset('/assets/course/materi/' . $file['file']) }}" download="{{ $file['file'] }}">
-                        <img src="{{ asset('/assets/icon/file.svg') }}" alt="file-icon">
+                    <a class="flex gap-3 font-medium bg-slate-100 p-2 rounded-md text-primary items-center"
+                        href="{{ $file['file'] }}" target="_blank" download="{{ $file['file'] }}">
+                        <img src="{{ asset('/assets/icon/file.svg') }}" alt="file-icon" class="w-10 h-10">
                         <p>{{ $file['nama'] }}</p>
                     </a>
-                @endforeach
+                @endforeach 
             @else
                 <h6 class="font-semibold text-primary">Materi kosong...</h6>
             @endif
         </div>
+        <br>
+        <div class="mt-3 md:mt-0">
+            <span class="font-semibold block mb-2">Link YouTube</span>
+            <div class="flex items-center gap-3">
+                <!-- Menampilkan thumbnail YouTube dan link -->
+                <a id="youtubeLink" href="{{ $file['link'] }}" target="_blank" style="display: none;">{{ $file['link'] }}</a>
+                <img id="youtubeThumbnail" src="" style="max-width: 100%; max-height: 200px; cursor: pointer;">
+            </div>
+        </div>
         <div>
-            <h3 class="font-extrabold text-xl text-primary">Task</h3>
+            <br>
+            <h3 class="font-extrabold text-xl text-primary"></h3>
             @if ($data->count() > 0)
                 @foreach ($data as $task)
-                    @if ($task['status'] == 'belum selesai')
-                        <a href="/mycourse/task/{{ $task['id'] }}" class="block my-3 max-w-xs">
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center gap-3">
-                                    <img src="{{ asset('/assets/icon/document_task.svg') }}" alt="icon_documentTask">
-                                    <p class="font-bold text-lg text-primary uppercase">{{ $task['nama'] }}</p>
-                                </div>
-                                <span class="bg-slate-500 text-xs text-white font-semibold rounded-full px-3 py-1">Not
-                                    Done</span>
-                            </div>
-                            <p class="text-xs bg-gray-100 w-max p-1 rounded-md m-2"><b>Deadline:</b>
-                                {{ $task['deadline'] }}
-                            </p>
-                        </a>
-                    @else
-                        <a href="/mycourse/assignment/{{ $task['id'] }}" class="block my-3 max-w-xs">
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center gap-3">
-                                    <img src="{{ asset('/assets/icon/document_task.svg') }}" alt="icon_documentTask">
-                                    <p class="font-bold text-lg text-primary uppercase">
-                                        {{ $task['nama'] }}</p>
-                                </div>
-                                <span
-                                    class="{{ $task['status'] == 'selesai' ? 'bg-green-400' : 'bg-rose-400' }} text-xs text-white font-semibold rounded-full px-3 py-1">{{ $task['status'] == 'selesai' ? 'Done' : 'Working Late' }}</span>
-                            </div>
-                            <p class="text-xs bg-gray-100 w-max p-1 rounded-md m-2"><b>Deadline:</b>
-                                {{ $task['deadline'] }}
-                            </p>
-                        </a>
-                    @endif
+                    <!-- Konten task -->
                 @endforeach
             @else
-                <h6 class="font-semibold text-primary">Task kosong...</h6>
+                <h6 class="font-semibold text-primary"></h6>
             @endif
         </div>
     </div>
+
+    <script>
+        // Fungsi untuk menampilkan thumbnail YouTube
+        function showYouTubeThumbnail() {
+            var linkInput = document.getElementById('youtubeLink').getAttribute('href');
+            var youtubeThumbnail = document.getElementById('youtubeThumbnail');
+
+            // Mengambil ID video YouTube dari link
+            var videoId = linkInput.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)[1];
+
+            // Memperbarui URL thumbnail dengan ID video
+            if (videoId) {
+                youtubeThumbnail.src = "https://img.youtube.com/vi/" + videoId + "/0.jpg";
+                youtubeThumbnail.style.display = 'inline-block'; // Menampilkan thumbnail
+            } else {
+                youtubeThumbnail.src = ""; // Membersihkan thumbnail jika link tidak valid
+                youtubeThumbnail.style.display = 'none'; // Menyembunyikan thumbnail
+            }
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        showYouTubeThumbnail();
+
+        // Tambahkan event listener untuk membuka link saat thumbnail diklik
+        document.getElementById('youtubeThumbnail').addEventListener('click', function() {
+            var link = document.getElementById('youtubeLink').getAttribute('href');
+            window.open(link, '_blank');
+        });
+    </script>
+
 @endsection

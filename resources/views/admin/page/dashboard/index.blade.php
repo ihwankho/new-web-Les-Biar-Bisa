@@ -3,6 +3,8 @@
 @section('title', 'Admin Dashboard')
 
 @section('content')
+<div class="relative">
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/background/backgroundU/Group.png'); z-index: -1; background-repeat:no-repeat; background-size: auto; width: 1580px; height: 940px; background-position: right;"></div>    
     <div class="flex items-center gap-3">
         <div class="card-modify text-primary w-max space-y-2">
             <div class="flex items-center gap-3">
@@ -31,14 +33,14 @@
         <div class="flex items-center justify-between">
             <h5 class="page-title">Schedule</h5>
             @if (count($data['schedule']) > 0)
-                <a class="font-medium text-primary" href="/admin/schedule">View All</a>
+                <a class="font-medium text-primary" href="/admin/schedule"></a>
             @endif
         </div>
         <div class="flex items-center gap-3">
             @if (count($data['schedule']) > 0)
                 @foreach ($data['schedule'] as $schedule)
                     <div class="card-modify w-max space-y-2">
-                        <img width="362" src={{ $schedule['jadwal'] }} alt="schedule-image">
+                        <img width="362" src="{{ $schedule['jadwal'] }}" alt="schedule-image">
                         <p class="font-bold text-lg text-primary">Schedule <span
                                 class="uppercase">{{ $schedule['nama'] }}</span></p>
                     </div>
@@ -78,4 +80,5 @@
             <h1>Tidak ada pelajar</h1>
         @endif
     </div>
+</div>
 @endsection

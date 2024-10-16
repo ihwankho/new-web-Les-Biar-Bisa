@@ -17,7 +17,7 @@ class ScheduleController extends Controller
                 'Authorization' => 'Bearer ' . $request->session()->get('token'),
             ],
         ])->getBody(), true)['data'];
-
+            
         $username = null;
         foreach ($users as $user) {
             if ($user['id'] == $request->session()->get('id_user')) {
@@ -93,7 +93,9 @@ class ScheduleController extends Controller
                 [
                     "name" => "nama",
                     "contents" => $request->nama,
-                ], [
+                ], 
+                
+                [
                     "name" => "jadwal",
                     "contents" => fopen($request->file('jadwal'), 'r'),
                     "filename" => $request->file('jadwal')->getClientOriginalName(),
@@ -135,51 +137,42 @@ class ScheduleController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        $client = new Client();
-        $url = env("API_URL");
+{
+    $client = new Client();
+    $url = env("API_URL");
 
-        if ($request->nama && !$request->hasFile('jadwal')) {
-            $response = json_decode($client->request("POST", $url . "/tingkatan/" . $id, [
-                "multipart" => [
-                    [
-                        "name" => "nama",
-                        "contents" => $request->nama,
-                    ]
-                ]
-            ], [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
-                ],
-            ])->getBody(), true)['status'];
-        } else if ($request->nama && $request->hasFile('jadwal')) {
-            $response = json_decode($client->request("POST", $url . "/tingkatan/" . $id, [
-                "multipart" => [
-                    [
-                        "name" => "nama",
-                        "contents" => $request->nama,
-                    ], [
-                        "name" => "jadwal",
-                        "contents" => fopen($request->file('jadwal'), 'r'),
-                        "filename" => $request->file('jadwal')->getClientOriginalName(),
-                        "headers" => [
-                            "Content-Type" => "<Content-type header>"
-                        ]
-                    ]
-                ]
-            ], [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $request->session()->get('token'),
-                ],
-            ])->getBody(), true)['status'];
-        }
+    $multipart = [
+        [
+            "name" => "nama",
+            "contents" => $request->nama,
+        ]
+    ];
 
-        if (!$response) {
-            return redirect('/admin/schedule')->with('failed', 'Failed change schedule');
-        }
-
-        return redirect('/admin/schedule')->with('success', 'Success change schedule');
+    if ($request->hasFile('jadwal')) {
+        $multipart[] = [
+            "name" => "jadwal",
+            "contents" => fopen($request->file('jadwal'), 'r'),
+            "filename" => $request->file('jadwal')->getClientOriginalName(),
+            "headers" => [
+                "Content-Type" => $request->file('jadwal')->getClientMimeType()
+            ]
+        ];
     }
+
+    $response = json_decode($client->request("POST", $url . "/tingkatan/" . $id, [
+        "multipart" => $multipart,
+        'headers' => [
+            'Authorization' => 'Bearer ' . $request->session()->get('token'),
+        ],
+    ])->getBody(), true)['status'];
+
+    if (!$response) {
+        return redirect('/admin/schedule')->with('failed', 'Failed change schedule');
+    }
+
+    return redirect('/admin/schedule')->with('success', 'Success change schedule');
+}
+
 
     /**
      * Remove the specified resource from storage.

@@ -3,10 +3,14 @@
 @section('title', 'Assignment')
 
 @section('content')
+<div class="relative">
+    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/background/backgroundU/Group.png'); z-index: -1; background-repeat:no-repeat; background-size: auto; width: 1570px; height: 900px; background-position: right;"></div>
+
     <h5 class="page-title">Your Assignment</h5>
     @if ($data->count() > 0)
 
         @foreach ($data as $item)
+        
             <div class="mt-5">
                 <h6 class="font-extrabold text-xl text-primary uppercase">{{ $item['course'] }}</h6>
                 <div>

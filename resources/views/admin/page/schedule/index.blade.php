@@ -3,6 +3,8 @@
 @section('title', 'Admin Schedule')
 
 @section('content')
+<div class="relative">
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/background/backgroundU/Group.png'); z-index: -1; background-repeat:no-repeat; background-size: auto; width: 1580px; height: 940px; background-position: right;"></div>    
     <a href="/admin/schedule/create" class="btn mb-3 inline-block">+ Add Schedule Image</a>
     @if ($data->count() > 0)
         @foreach ($data as $item)
@@ -19,14 +21,14 @@
                     <form action="/admin/schedule/{{ $item['id'] }}" method="post">
                         @method('DELETE')
                         @csrf
-                        <button onclick="return confirm('Are you sure?')" type="submit"
-                            class="p-2 text-xs font-semibold bg-rose-500 flex gap-2 w-max text-white rounded-md"><img
-                                src="{{ asset('/assets/icon/remove.svg') }}" alt="remove-icon"> Remove</button>
+                        
                     </form>
                 </div>
             </div>
+
         @endforeach
     @else
         <p class="page-title">Data schedule is Empty</p>
     @endif
+</div>
 @endsection

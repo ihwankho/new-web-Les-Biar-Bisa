@@ -20,12 +20,12 @@
 
             <label class="block" for="username">
                 <span class="block font-semibold text-primary">Username</span>
-                <input placeholder="Input your username here" class="p-2 outline-none border rounded-md border-primary"
+                <input placeholder="Input your username here" class="p-2 w-full outline-none border rounded-md border-primary"
                     type="text" name="username" id="username">
             </label>
             <label class="block mt-3" for="password">
                 <span class="block font-semibold text-primary">Password</span>
-                <input placeholder="Input your password here" class="p-2 outline-none border rounded-md border-primary"
+                <input placeholder="Input your password here" class="p-2 w-full outline-none border rounded-md border-primary"
                     type="password" name="password" id="password">
             </label>
 
@@ -39,6 +39,7 @@
             @endif
         </form>
     </div>
+    
 </body>
 
 </html>

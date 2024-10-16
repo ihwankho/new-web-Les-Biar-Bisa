@@ -407,54 +407,7 @@ class CourseController extends Controller
             }
         }
 
-        $assignments = json_decode($client->request("GET", $url . "/assignments", [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $request->session()->get('token'),
-            ],
-        ])->getBody(), true)['data'];
-        $assignment = collect([]);
-        foreach ($assignments as $ass) {
-            if ($ass['id_course'] == $id) {
-                $assignment->push($ass);
-            }
-        }
-
-        $score = json_decode($client->request("GET", $url . "/scores", [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $request->session()->get('token'),
-            ],
-        ])->getBody(), true)['data'];
-        $scores = collect([]);
-        foreach ($score as $sc) {
-            if ($sc['id_user'] ==  $request->session()->get('id_user')) {
-                $scores->push($sc);
-            }
-        }
-
         $data = collect([]);
-
-
-        foreach ($assignment as $task) {
-            $dateString = $task['deadline'];
-            $dateTime = new DateTime($dateString);
-            $formattedDate = $dateTime->format('d F Y H:i:s');
-
-            $taskData = [
-                "id" => $task['id'],
-                "nama" => $task['nama'],
-                "deadline" => $formattedDate,
-            ];
-
-            $foundScore = $scores->firstWhere('id_assignment', $task['id']);
-
-            if ($foundScore) {
-                $taskData["status"] = $foundScore['status'];
-            } else {
-                $taskData["status"] = "belum selesai";
-            }
-
-            $data->push($taskData);
-        }
 
         return view('users.page.mycourse.show', compact('data', 'course', 'file_course'));
     }

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Mail\QuizNotificationMail;
 use App\Models\Assignment;
 use App\Models\Course;
 use App\Models\Tingkatan;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AssignmentController extends Controller
@@ -29,40 +32,39 @@ class AssignmentController extends Controller
                         }
                     }
                 }
-            } else if ($idCourse != null && $idTingkatan == null) {
+            } elseif ($idCourse != null && $idTingkatan == null) {
                 $assignments = Assignment::where('id_course', '=', $idCourse)->get();
             } else {
                 $assignments = Assignment::all();
             }
 
-
             return response()->json([
-                "status" => true,
-                "message" => "GET all data assignments successfully",
-                "data" => $assignments
+                'status' => true,
+                'message' => 'GET all data assignments successfully',
+                'data' => $assignments,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                "status" => false,
-                "message" => $e->getMessage()
+                'status' => false,
+                'message' => $e->getMessage(),
             ]);
         }
     }
 
-    public function show(String $id)
+    public function show(string $id)
     {
         try {
             $assignment = Assignment::findOrFail($id);
 
             return response()->json([
-                "status" => true,
-                "message" => "GET data assignment by id successfully",
-                "data" => $assignment
+                'status' => true,
+                'message' => 'GET data assignment by id successfully',
+                'data' => $assignment,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                "status" => false,
-                "message" => $e->getMessage()
+                'status' => false,
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -71,36 +73,44 @@ class AssignmentController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                "nama" => "required",
-                "catatan" => "required",
-                "deadline" => "required",
-                "metode_pengumpulan" => "required|in:url,file,semua",
-                "id_course" => "required"
+                'nama' => 'required',
+                'catatan' => 'required',
+                'deadline' => 'required',
+                'metode_pengumpulan' => 'required|in:url,file,semua',
+                'id_course' => 'required',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
-                    "status" => false,
-                    "errors" => $validator->errors()->all()
+                    'status' => false,
+                    'errors' => $validator->errors()->all(),
                 ]);
             }
 
             Assignment::create($request->all());
 
+            $course = Course::where('id', $request->id_course)->first();
+
+            $users = User::where('id_tingkatan', $course->id_tingkatan)->get();
+
+            foreach ($users as $user) {
+                Mail::to($user->email)->send(new QuizNotificationMail("Task",$request->nama));
+            }
+
             return response()->json([
-                "status" => true,
-                "message" => "ADD data assignment successfully",
-                "data_created" => $request->all()
+                'status' => true,
+                'message' => 'ADD data assignment successfully',
+                'data_created' => $request->all(),
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                "status" => false,
-                "message" => $e->getMessage()
+                'status' => false,
+                'message' => $e->getMessage(),
             ]);
         }
     }
 
-    public function update(Request $request, String $id)
+    public function update(Request $request, string $id)
     {
         try {
             $assignment = Assignment::findOrFail($id);
@@ -108,20 +118,20 @@ class AssignmentController extends Controller
             $assignment->update($request->all());
 
             return response()->json([
-                "status" => true,
-                "message" => "EDIT data assignment successfully",
-                "data_edited" => $request->all(),
-                "id_course" => $assignment->id_course
+                'status' => true,
+                'message' => 'EDIT data assignment successfully',
+                'data_edited' => $request->all(),
+                'id_course' => $assignment->id_course,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                "status" => false,
-                "message" => $e->getMessage()
+                'status' => false,
+                'message' => $e->getMessage(),
             ]);
         }
     }
 
-    public function destroy(String $id)
+    public function destroy(string $id)
     {
         try {
             $assignment = Assignment::findOrFail($id);
@@ -129,14 +139,14 @@ class AssignmentController extends Controller
             $assignment->delete();
 
             return response()->json([
-                "status" => true,
-                "message" => "DELETE data assignment successfully",
-                "id_course" => $assignment->id_course
+                'status' => true,
+                'message' => 'DELETE data assignment successfully',
+                'id_course' => $assignment->id_course,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                "status" => false,
-                "message" => $e->getMessage()
+                'status' => false,
+                'message' => $e->getMessage(),
             ]);
         }
     }

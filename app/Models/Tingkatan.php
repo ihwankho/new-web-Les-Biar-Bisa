@@ -15,4 +15,8 @@ class Tingkatan extends Model
     {
         return $this->hasMany(User::class);
     }
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class, 'id_tingkatan');
+    }
 }

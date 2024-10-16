@@ -7,6 +7,8 @@
 @endphp
 
 @section('content')
+<div class="relative">
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/background/backgroundU/Group.png'); z-index: -1; background-repeat:no-repeat; background-size: auto; width: 1580px; height: 940px; background-position: right;"></div>    
     <a href="/admin/course/create" class="btn">+ Add Course</a>
 
     <div class="flex items-center gap-3 mt-5">
@@ -35,17 +37,11 @@
                         <p class="text-xs bg-primary p-2 rounded-md w-max text-white font-semibold">{{ $item['materi'] }}
                             Materi
                             | {{ $item['assignment'] }} Assignments</p>
-                        <div class="mt-3 w-full flex">
+                        <div class="mt-3 w-full flex justify-center">
                             <a href="/admin/course/edit/{{ $item['id'] }}"
                                 class="p-2 block w-full text-xs font-semibold text-white text-center bg-green-500 rounded-md">Edit
                                 Course</a>
-                            <form class="block ml-2 w-full" action="/admin/course/{{ $item['id'] }}" method="post">
-                                @method('DELETE')
-                                @csrf
-                                <button type="submit"
-                                    class="p-2 block w-full text-xs font-semibold text-white text-center bg-rose-500 rounded-md">Delete
-                                    Course</button>
-                            </form>
+                        
                         </div>
                     </a>
                 </div>
@@ -54,4 +50,5 @@
             <p class="page-title">Data is empty</p>
         @endif
     </div>
+</div>
 @endsection

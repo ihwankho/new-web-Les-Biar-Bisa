@@ -3,6 +3,9 @@
 @section('title', 'Payment')
 
 @section('content')
+<div class="relative">
+    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/background/backgroundU/Group.png'); z-index: -1; background-repeat:no-repeat; background-size: auto; width: 1570px; height: 900px; background-position: right;"></div>
+
     <h5 class="page-title">
         History Payment</h5>
 

@@ -9,5 +9,5 @@ class FileCourse extends Model
 {
     use HasFactory;
     protected $table = 'File_course';
-    protected $fillable = ['nama', 'file', 'id_course'];
+    protected $fillable = ['nama', 'file', 'id_course', 'link'];
 }

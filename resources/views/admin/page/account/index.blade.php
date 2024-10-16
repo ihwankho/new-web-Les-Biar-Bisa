@@ -3,6 +3,8 @@
 @section('title', 'Admin Account')
 
 @section('content')
+<div class="relative">
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/background/backgroundU/Group.png'); z-index: -1; background-repeat:no-repeat; background-size: auto; width: 1580px; height: 940px; background-position: right;"></div>    
     <h5 class="page-title">Account</h5>
     <a href="/admin/account/create" class="btn inline-block">+ Add Account</a>
     @if (Session::has('error'))
@@ -56,4 +58,5 @@
     @else
         <p class="page-title">Data is empty...</p>
     @endif
+</div>
 @endsection
